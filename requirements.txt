@@ -8,3 +8,4 @@ scipy
 decord
 TensorboardX
 opencv-python
+gdown

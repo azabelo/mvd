@@ -19,11 +19,11 @@ DATA_ROOT='hmdb51_mp4'
         --image_teacher_model mae_teacher_vit_base_patch16 \
         --distillation_target_dim 768 \
         --distill_loss_func SmoothL1 \
-        --image_teacher_model_ckpt_path 'your_path/mae_pretrain_vit_base.pth' \
+        --image_teacher_model_ckpt_path 'image_teacher.pth' \
         --video_teacher_model pretrain_videomae_teacher_base_patch16_224 \
         --video_distillation_target_dim 768 \
         --video_distill_loss_func SmoothL1 \
-        --video_teacher_model_ckpt_path 'your_path/k400_videomae_pretrain_base_patch16_224_frame_16x4_tube_mask_ratio_0.9_e1600.pth' \
+        --video_teacher_model_ckpt_path 'video_teacher.pth' \
         --mask_type tube --mask_ratio 0.9 --decoder_depth 2 \
         --batch_size 16 --update_freq 2 --save_ckpt_freq 10 \
         --num_frames 16 --sampling_rate 4 \
