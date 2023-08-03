@@ -1,6 +1,7 @@
 timm==0.4.12
 torch==1.10
-torchvision==0.11.2
+#or 1.13 seems to work on vast.ai GPUs
+torchvision
 deepspeed==0.5.8
 einops
 scipy
