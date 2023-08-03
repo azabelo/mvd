@@ -101,7 +101,7 @@ echo "Conversion complete. .avi files in $input_directory and its subdirectories
 
 ######## MAKE CSV FILE ############
 
-directory="hmdb_mp4"  # Replace this with the path to your starting directory
+directory="hmdb51_mp4"  # Replace this with the path to your starting directory
 output_csv="train.csv"  # Replace this with the desired output CSV file name
 
 # Function to get the number of frames in a video file
