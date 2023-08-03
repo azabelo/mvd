@@ -6,3 +6,4 @@ einops
 scipy
 decord
 TensorboardX
+opencv-python
