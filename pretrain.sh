@@ -1,15 +1,15 @@
-GPUS=1
-NODE_COUNT=1
-RANK=0
-MASTER_PORT=29500
+#GPUS=1
+#NODE_COUNT=1
+#RANK=0
+#MASTER_PORT=29500
 OUTPUT_DIR='OUTPUT/mvd_vit_base_with_vit_base_teacher_HMDB51'
 DATA_PATH='train.csv'
 DATA_ROOT='hmdb51_mp4'
 
-OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
-        --master_port ${MASTER_PORT} --nnodes=${NODE_COUNT} \
-        --node_rank=${RANK} --master_addr=${MASTER_ADDR} \
-        run_mvd_pretraining.py \
+#OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
+#        --master_port ${MASTER_PORT} --nnodes=${NODE_COUNT} \
+#        --node_rank=${RANK} --master_addr=${MASTER_ADDR} \
+        python3 run_mvd_pretraining.py \
         --data_path ${DATA_PATH} \
         --data_root ${DATA_ROOT} \
         --model pretrain_masked_video_student_base_patch16_224 \
