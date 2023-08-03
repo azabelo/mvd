@@ -25,7 +25,7 @@ DATA_ROOT='hmdb51_mp4'
         --video_distill_loss_func SmoothL1 \
         --video_teacher_model_ckpt_path 'video_teacher.pth' \
         --mask_type tube --mask_ratio 0.9 --decoder_depth 2 \
-        --batch_size 16 --update_freq 2 --save_ckpt_freq 10 \
+        --batch_size 1 --update_freq 2 --save_ckpt_freq 10 \
         --num_frames 16 --sampling_rate 4 \
         --lr 1.5e-4 --min_lr 1e-4 --drop_path 0.1 --warmup_epochs 40 --epochs 401 \
         --auto_resume
