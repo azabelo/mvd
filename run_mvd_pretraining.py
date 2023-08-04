@@ -313,6 +313,7 @@ def main(args):
             return sum(p.numel() for p in model.parameters() if p.requires_grad)
 
         print("Number of parameters in teacher model = %s" % str(count_parameters(image_teacher_model)))
+        time.sleep(3)
 
     image_teacher_model.to(device)
 
