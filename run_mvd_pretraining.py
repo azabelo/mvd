@@ -301,9 +301,6 @@ def main(args):
 
         utils.load_state_dict(image_teacher_model, checkpoint_model, prefix=args.model_prefix)
 
-    print(image_teacher_model)
-    print(type(image_teacher_model))
-    quit(0)
     image_teacher_model.to(device)
 
     video_teacher_model = get_video_teacher_model(args)
