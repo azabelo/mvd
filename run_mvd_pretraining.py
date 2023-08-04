@@ -267,6 +267,13 @@ def main(args):
     n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
 
     image_teacher_model = get_image_teacher_model(args)
+
+    def count_parameters(model):
+        return sum(p.numel() for p in model.parameters())
+
+    print("Number of parameters in teacher model = %s" % str(count_parameters(image_teacher_model)))
+
+    time.sleep(3)
     print("getting image model ckpt path")
     time.sleep(2)
     print(args.image_teacher_model_ckpt_path)
