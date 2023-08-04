@@ -20,7 +20,7 @@ OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         --image_teacher_model mae_teacher_vit_base_patch16 \
         --distillation_target_dim 768 \
         --distill_loss_func SmoothL1 \
-        --image_teacher_model_ckpt_path 'image_teacher.pth' \
+        --image_teacher_model_ckpt_path 'clip_model.pth' \
         --video_teacher_model pretrain_videomae_teacher_base_patch16_224 \
         --video_distillation_target_dim 768 \
         --video_distill_loss_func SmoothL1 \
