@@ -1,7 +1,7 @@
 GPUS=1
 NODE_COUNT=1
 RANK=0
-MASTER_PORT=29500
+MASTER_PORT='localhost'
 OUTPUT_DIR='OUTPUT/mvd_vit_base_with_vit_base_teacher_HMDB51'
 DATA_PATH='train.csv'
 DATA_ROOT='hmdb51_mp4'
