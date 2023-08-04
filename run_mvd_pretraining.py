@@ -310,7 +310,7 @@ def main(args):
         utils.load_state_dict(image_teacher_model, checkpoint_model, prefix=args.model_prefix)
 
         def count_parameters(model):
-            return sum(p.numel() for p in model.parameters() if p.requires_grad)
+            return sum(p.numel() for p in model.parameters())
 
         print("Number of parameters in teacher model = %s" % str(count_parameters(image_teacher_model)))
         time.sleep(3)
