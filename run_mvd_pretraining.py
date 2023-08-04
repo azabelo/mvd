@@ -21,7 +21,6 @@ import modeling_teacher
 import modeling_video_teacher
 
 import time
-from torchsummary import summary
 
 
 def get_args():
@@ -312,8 +311,6 @@ def main(args):
 
         def count_parameters(model):
             return sum(p.numel() for p in model.parameters())
-
-        summary(model.to(device), input_size=(3, 224, 224))
         print("Number of parameters in teacher model = %s" % str(count_parameters(image_teacher_model)))
 
         time.sleep(3)
