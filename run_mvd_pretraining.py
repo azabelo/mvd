@@ -168,6 +168,8 @@ def get_args():
 
 
 def get_image_teacher_model(args):
+    # if non timme
+    # run andrew's custom model
     print(f"Creating teacher model: {args.image_teacher_model}")
     model = create_model(
         args.image_teacher_model,
@@ -268,21 +270,11 @@ def main(args):
 
     image_teacher_model = get_image_teacher_model(args)
 
-    print(image_teacher_model)
-    exit(0)
-
-    time.sleep(3)
-    print("getting image model ckpt path")
-    time.sleep(2)
-    print(args.image_teacher_model_ckpt_path)
-
     if args.image_teacher_model_ckpt_path:
         if args.image_teacher_model_ckpt_path.startswith('https'):
             checkpoint = torch.hub.load_state_dict_from_url(
                 args.image_teacher_model_ckpt_path, map_location='cpu', check_hash=True)
         else:
-            print("at checkpoint")
-            time.sleep(2)
             checkpoint = torch.load(args.image_teacher_model_ckpt_path, map_location='cpu')
 
         print("Load teacher ckpt from %s" % args.image_teacher_model_ckpt_path)
@@ -313,6 +305,7 @@ def main(args):
         checkpoint_model = new_dict
 
         utils.load_state_dict(image_teacher_model, checkpoint_model, prefix=args.model_prefix)
+        print(image_teacher_model)
 
         def count_parameters(model):
             return sum(p.numel() for p in model.parameters())
