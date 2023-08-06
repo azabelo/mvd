@@ -21,6 +21,10 @@ import modeling_teacher
 import modeling_video_teacher
 
 import time
+import sys
+import os
+
+import clip
 
 
 def get_args():
@@ -168,15 +172,18 @@ def get_args():
 
 
 def get_image_teacher_model(args):
-    # if non timme
-    # run andrew's custom model
-    print(f"Creating teacher model: {args.image_teacher_model}")
-    model = create_model(
-        args.image_teacher_model,
-        pretrained=False,
-        img_size=args.teacher_input_size,
-    )
-    return model
+    # getting clip model
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model, preprocess = clip.load("ViT-B/16", device=device)
+    return model.visual
+    #
+    # print(f"Creating teacher model: {args.image_teacher_model}")
+    # model = create_model(
+    #     args.image_teacher_model,
+    #     pretrained=False,
+    #     img_size=args.teacher_input_size,
+    # )
+    # return model
 
 
 def get_video_teacher_model(args):
@@ -440,6 +447,7 @@ def main(args):
 
 
 if __name__ == '__main__':
+    print("changed")
     opts = get_args()
     if opts.output_dir:
         Path(opts.output_dir).mkdir(parents=True, exist_ok=True)

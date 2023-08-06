@@ -61,10 +61,13 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
                     print(videos_for_teacher.shape)
                     print(tubelet_size)
                     print(videos_for_teacher[:, :, ::tubelet_size, :, :].shape)
+                    print(rearrange(videos_for_teacher[:, :, ::tubelet_size, :, :], 'b c t h w -> (b t) c h w').shape)
                     teacher_features = image_teacher_model(
                         rearrange(videos_for_teacher[:, :, ::tubelet_size, :, :], 'b c t h w -> (b t) c h w'),
                     )
+                    print(teacher_features.shape)
                     teacher_features = rearrange(teacher_features, '(b t) l c -> b (t l) c', t=T//tubelet_size)
+                    print(teacher_features.shape)
                 else:
                     teacher_features = image_teacher_model(
                         rearrange(videos_for_teacher, 'b c t h w -> (b t) c h w'),
