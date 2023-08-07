@@ -20,7 +20,7 @@ import modeling_student
 import modeling_teacher
 import modeling_video_teacher
 
-import time
+import wandb
 import sys
 import os
 
@@ -218,6 +218,10 @@ def get_model(args):
 
 
 def main(args):
+    wandb.init(project='HMDB-51 video classification')
+    # Log the arguments to wandb
+    wandb.config.update(args)
+
     utils.init_distributed_mode(args)
 
     print(args)

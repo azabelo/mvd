@@ -238,6 +238,7 @@ class VisionTransformer(nn.Module):
         # if self.proj is not None:
         #     x = x @ self.proj
 
+
         # Remove the CLS token
         x = x[:, 1:]
 
