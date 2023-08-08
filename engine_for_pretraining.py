@@ -53,21 +53,13 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
 
         with torch.cuda.amp.autocast():
             output_features, output_video_features = model(videos, bool_masked_pos)
-            print(output_features.shape)
-            print(output_video_features.shape)
             with torch.no_grad():
                 image_teacher_model.eval()
                 if time_stride_loss:
-                    print(videos_for_teacher.shape)
-                    print(tubelet_size)
-                    print(videos_for_teacher[:, :, ::tubelet_size, :, :].shape)
-                    print(rearrange(videos_for_teacher[:, :, ::tubelet_size, :, :], 'b c t h w -> (b t) c h w').shape)
                     teacher_features = image_teacher_model(
                         rearrange(videos_for_teacher[:, :, ::tubelet_size, :, :], 'b c t h w -> (b t) c h w'),
                     )
-                    print(teacher_features.shape)
                     teacher_features = rearrange(teacher_features, '(b t) l c -> b (t l) c', t=T//tubelet_size)
-                    print(teacher_features.shape)
                 else:
                     teacher_features = image_teacher_model(
                         rearrange(videos_for_teacher, 'b c t h w -> (b t) c h w'),
@@ -101,6 +93,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
             loss = image_loss_weight * loss_img_feat + video_loss_weight * loss_vid_feat
 
         loss_value = loss.item()
+        wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value})
 
         if not math.isfinite(loss_value):
             print("Loss is {}, stopping training".format(loss_value))
