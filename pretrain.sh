@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Check if four arguments are provided
-if [ $# -ne 5 ]; then
-    echo "please provide GPS NODE_COUNT RANK MASTER_PORT MASTER_ADDR (localhost when using only 1 GPU)"
+if [ $# -ne 7 ]; then
+    echo "please provide GPS NODE_COUNT RANK MASTER_PORT MASTER_ADDR (localhost when using only 1 GPU) BATCH_SIZE INITIAL_LR"
     exit 1
 fi
 
@@ -11,6 +11,8 @@ NODE_COUNT="$2"
 RANK="$3"
 MASTER_PORT="$4"
 MASTER_ADDR="$5"
+BATCH_SIZE="$6"
+LEARNING_RATE="$7"
 OUTPUT_DIR='OUTPUT/mvd_vit_base_with_vit_base_teacher_HMDB51'
 DATA_PATH='train.csv'
 DATA_ROOT='hmdb51_mp4'
@@ -34,7 +36,7 @@ OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         --video_distill_loss_func SmoothL1 \
         --video_teacher_model_ckpt_path 'video_teacher.pth' \
         --mask_type tube --mask_ratio 0.9 --decoder_depth 2 \
-        --batch_size 1 --update_freq 2 --save_ckpt_freq 10 \
+        --batch_size BATCH_SIZE --update_freq 2 --save_ckpt_freq 10 \
         --num_frames 16 --sampling_rate 4 \
-        --lr 1.5e-4 --min_lr 1e-4 --drop_path 0.1 --warmup_epochs 40 --epochs 401 \
+        --lr LEARNING_RATE --min_lr 1e-2 --drop_path 0.1 --warmup_epochs 40 --epochs 401 \
         --auto_resume
