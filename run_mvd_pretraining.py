@@ -218,7 +218,7 @@ def get_model(args):
 
 
 def main(args):
-    wandb.init(project='HMDB-51 video classification')
+    wandb.init(project='MVD+CLIP')
     # Log the arguments to wandb
     wandb.config.update(args)
 
@@ -429,6 +429,7 @@ def main(args):
             video_teacher_model=video_teacher_model,
             norm_feature=args.norm_feature,
         )
+        wandb.log({"epoch": epoch, "train_loss": train_stats["loss"]})
 
         if args.output_dir:
             if (epoch + 1) % args.save_ckpt_freq == 0 or epoch + 1 == args.epochs:
