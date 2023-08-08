@@ -1,8 +1,16 @@
-GPUS=1
-NODE_COUNT=1
-RANK=0
-MASTER_PORT=40228
-MASTER_ADDR='localhost'
+#!/bin/bash
+
+# Check if four arguments are provided
+if [ $# -ne 5 ]; then
+    echo "please provide GPS NODE_COUNT RANK MASTER_PORT MASTER_ADDR (localhost when using only 1 GPU)"
+    exit 1
+fi
+
+GPUS="$1"
+NODE_COUNT="$2"
+RANK="$3"
+MASTER_PORT="$4"
+MASTER_ADDR="$5"
 OUTPUT_DIR='OUTPUT/mvd_vit_base_with_vit_base_teacher_HMDB51'
 DATA_PATH='train.csv'
 DATA_ROOT='hmdb51_mp4'
