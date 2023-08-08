@@ -30,7 +30,7 @@ unzip hmdb51_mp4.zip
 
 ######## MAKE CSV FILE ############
 
-gdown https://drive.google.com/uc?id=1s1_yyHmHJFp4MCSHYwkWXEgvT4ISuL36 --output train.csv
+gdown https://drive.google.com/uc?id=1SERyaCXqPfzhCI4z6WG0UA9m_jdqBSrb --output train.csv
 
 ######## GET IMAGE AND VIDEO TEACHERS #########
 
