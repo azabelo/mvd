@@ -30,44 +30,10 @@ unzip hmdb51_mp4.zip
 
 ######## MAKE CSV FILE ############
 
-directory="hmdb51_mp4"  # Replace this with the path to your starting directory
-output_csv="train.csv"  # Replace this with the desired output CSV file name
+gdown https://drive.google.com/uc?id=1s1_yyHmHJFp4MCSHYwkWXEgvT4ISuL36 --output train.csv
 
-# Function to get the number of frames in a video file
-get_frame_count() {
-  # Use ffprobe to get the frame count from the video file
-  frame_count=$(ffprobe -v error -select_streams v:0 -count_packets -show_entries stream=nb_read_packets -of csv=p=0 "$1")
-  echo "$frame_count"
-}
+######## GET IMAGE AND VIDEO TEACHERS #########
 
-# Check if the directory exists
-if [ ! -d "$directory" ]; then
-  echo "Error: Directory '$directory' not found."
-  exit 1
-fi
+curl https://dl.fbaipublicfiles.com/mae/pretrain/mae_pretrain_vit_base.pth --output image_teacher.pth
+gdown 'https://drive.google.com/u/0/uc?id=1tEhLyskjb755TJ65ptsrafUG2llSwQE1&amp;export=download&amp;confirm=t&amp;uuid=63e3a20f-2e32-4603-bc52-13a154ead88c&amp;at=ALt4Tm0vJDg8yrew90Qs81X3co6l:1691104865099&confirm=t&uuid=319d04ee-2975-41b8-b28e-2118e9b41167&at=ALt4Tm03Kkqy082aSFi3NPa54Un3:1691106288399' --output video_teacher.pth
 
-# Create the output CSV file
-touch "$output_csv"
-
-# Function to list all files in a directory (recursively)
-list_files() {
-  local current_dir="$1"
-
-  for file in "$current_dir"/*; do
-    if [ -f "$file" ]; then
-      # Print the relative path, video duration, and video label to the output CSV
-      relative_path="${file#"$directory"}"
-      frame_count=$(get_frame_count "$file")
-      video_label=$(basename "$current_dir")
-      echo "$directory$relative_path $frame_count $video_label" >> "$output_csv"
-    elif [ -d "$file" ]; then
-      # If it's a subdirectory, recursively call the function
-      list_files "$file"
-    fi
-  done
-}
-
-# Call the function to list all files in the directory and its subdirectories
-list_files "$directory"
-
-echo "CSV file created: $output_csv"
