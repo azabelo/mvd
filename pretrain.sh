@@ -13,7 +13,7 @@ MASTER_PORT="$4"
 MASTER_ADDR="$5"
 OUTPUT_DIR='OUTPUT/mvd_vit_base_with_vit_base_teacher_HMDB51'
 DATA_PATH='train.csv'
-DATA_ROOT='hmdb51_mp4'
+DATA_ROOT=''
 
 OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         --master_port ${MASTER_PORT} --nnodes=${NODE_COUNT} \
