@@ -23,7 +23,7 @@ OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=${GPUS} \
     --node_rank=${RANK} --master_addr=${MASTER_ADDR} \
     run_class_finetuning.py \
     --model vit_base_patch16_224 \
-    --data_set Kinetics-400 --nb_classes 26 \
+    --data_set Kinetics-400 --nb_classes 51 \
     --data_path ${DATA_PATH} \
     --data_root ${DATA_ROOT} \
     --finetune ${MODEL_PATH} \
