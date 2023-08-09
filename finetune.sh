@@ -15,7 +15,7 @@ BATCH_SIZE="$6"
 LEARNING_RATE="$7"
 OUTPUT_DIR='OUTPUT/mvd_vit_base_with_vit_base_teacher_HMDB51_finetune'
 MODEL_PATH="$8"
-DATA_PATH='train.csv'
+DATA_PATH='finetune_splits'
 DATA_ROOT='hmdb51_mp4'
 
 OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=${GPUS} \
