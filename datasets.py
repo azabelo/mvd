@@ -99,7 +99,7 @@ def build_dataset(is_train, test_mode, args):
             new_width=320,
             args=args,
         )
-        nb_classes = 400
+        nb_classes = 26
 
     elif args.data_set == 'SSV2':
         mode = None
