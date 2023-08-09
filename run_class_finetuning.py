@@ -270,9 +270,8 @@ def main(args, ds_init):
         dataset_val = None
     else:
         dataset_val, _ = build_dataset(is_train=False, test_mode=False, args=args)
-    print("here","🟩"*10000)
     dataset_test, _ = build_dataset(is_train=False, test_mode=True, args=args)
-    print("after test")
+    print("here","🟩"*10000)
 
     num_tasks = utils.get_world_size()
     global_rank = utils.get_rank()
