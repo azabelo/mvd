@@ -311,7 +311,7 @@ def main(args, ds_init):
         drop_last=True,
         collate_fn=collate_func,
     )
-    print("here","🟩"*10000)
+
     if dataset_val is not None:
         data_loader_val = torch.utils.data.DataLoader(
             dataset_val, sampler=sampler_val,
@@ -517,7 +517,7 @@ def main(args, ds_init):
                     f.write(json.dumps(log_stats) + "\n")
         exit(0)
         
-
+    print("here","🟩"*10000)
     print(f"Start training for {args.epochs} epochs")
     start_time = time.time()
     max_accuracy = 0.0
