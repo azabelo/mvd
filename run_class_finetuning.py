@@ -301,6 +301,7 @@ def main(args, ds_init):
     else:
         collate_func = None
 
+    print("WORKERS ", args.num_workers)
     data_loader_train = torch.utils.data.DataLoader(
         dataset_train, sampler=sampler_train,
         batch_size=args.batch_size,
