@@ -264,12 +264,16 @@ def main(args, ds_init):
     args.window_size = (args.num_frames // 2, args.input_size // patch_size[0], args.input_size // patch_size[1])
     args.patch_size = patch_size
 
+    print("before train")
     dataset_train, args.nb_classes = build_dataset(is_train=True, test_mode=False, args=args)
+    print("before val")
     if args.disable_eval_during_finetuning:
         dataset_val = None
     else:
         dataset_val, _ = build_dataset(is_train=False, test_mode=False, args=args)
+    print("before test")
     dataset_test, _ = build_dataset(is_train=False, test_mode=True, args=args)
+    print("after test")
 
     num_tasks = utils.get_world_size()
     global_rank = utils.get_rank()
@@ -301,7 +305,6 @@ def main(args, ds_init):
     else:
         collate_func = None
 
-    print("WORKERS ", args.num_workers)
     data_loader_train = torch.utils.data.DataLoader(
         dataset_train, sampler=sampler_train,
         batch_size=args.batch_size,
