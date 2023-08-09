@@ -264,14 +264,12 @@ def main(args, ds_init):
     args.window_size = (args.num_frames // 2, args.input_size // patch_size[0], args.input_size // patch_size[1])
     args.patch_size = patch_size
 
-    print("before train","🟥"*10000)
     dataset_train, args.nb_classes = build_dataset(is_train=True, test_mode=False, args=args)
     if args.disable_eval_during_finetuning:
         dataset_val = None
     else:
         dataset_val, _ = build_dataset(is_train=False, test_mode=False, args=args)
     dataset_test, _ = build_dataset(is_train=False, test_mode=True, args=args)
-    print("here","🟩"*10000)
 
     num_tasks = utils.get_world_size()
     global_rank = utils.get_rank()
@@ -516,7 +514,8 @@ def main(args, ds_init):
                 with open(os.path.join(args.output_dir, args.eval_log_name + ".txt"), mode="a", encoding="utf-8") as f:
                     f.write(json.dumps(log_stats) + "\n")
         exit(0)
-        
+
+    print("here","🟩"*10000)
     print("here","🟩"*10000)
     print(f"Start training for {args.epochs} epochs")
     start_time = time.time()
