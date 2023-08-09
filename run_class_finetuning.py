@@ -311,7 +311,7 @@ def main(args, ds_init):
         drop_last=True,
         collate_fn=collate_func,
     )
-
+    print("here","🟩"*10000)
     if dataset_val is not None:
         data_loader_val = torch.utils.data.DataLoader(
             dataset_val, sampler=sampler_val,
