@@ -11,6 +11,7 @@ from einops import rearrange
 from torch.utils.data._utils.collate import default_collate
 import torch.nn.functional as F
 
+import wandb
 
 def train_class_batch(model, samples, target, criterion):
     outputs = model(samples)
@@ -110,6 +111,9 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
         metric_logger.update(loss=loss_value)
         metric_logger.update(class_acc=class_acc)
         metric_logger.update(loss_scale=loss_scale_value)
+
+        wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value, "train_acc": class_acc})
+
         min_lr = 10.
         max_lr = 0.
         for group in optimizer.param_groups:

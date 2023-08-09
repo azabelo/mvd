@@ -218,7 +218,7 @@ def get_model(args):
 
 
 def main(args):
-    wandb.init(project='MVD+CLIP')
+    wandb.init(project='MVD+CLIP pretraining')
     # Log the arguments to wandb
     wandb.config.update(args)
 

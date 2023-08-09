@@ -23,6 +23,8 @@ from utils import multiple_samples_collate
 import utils
 import modeling_finetune
 
+import wandb
+
 
 def get_args():
     parser = argparse.ArgumentParser('MVD fine-tuning and evaluation script for video classification', add_help=False)
@@ -218,6 +220,10 @@ def get_args():
 
 
 def main(args, ds_init):
+    wandb.init(project='MVD+CLIP finetuning')
+    # Log the arguments to wandb
+    wandb.config.update(args)
+
     utils.init_distributed_mode(args)
 
     if ds_init is not None:
