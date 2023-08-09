@@ -36,7 +36,7 @@ OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         --video_distill_loss_func SmoothL1 \
         --video_teacher_model_ckpt_path 'video_teacher.pth' \
         --mask_type tube --mask_ratio 0.9 --decoder_depth 2 \
-        --batch_size ${BATCH_SIZE} --update_freq 2 --save_ckpt_freq 10 \
+        --batch_size ${BATCH_SIZE} --update_freq 2 --save_ckpt_freq 3 \
         --num_frames 16 --sampling_rate 4 \
-        --lr ${LEARNING_RATE} --min_lr 1e-2 --drop_path 0.1 --warmup_epochs 40 --epochs 401 \
+        --lr ${LEARNING_RATE} --min_lr 1e-2 --drop_path 0.1 --warmup_epochs 3 --epochs 10 \
         --auto_resume
