@@ -264,9 +264,9 @@ def main(args, ds_init):
     args.window_size = (args.num_frames // 2, args.input_size // patch_size[0], args.input_size // patch_size[1])
     args.patch_size = patch_size
 
-    print("before train")
+    print("before train","🟥"*1000)
     dataset_train, args.nb_classes = build_dataset(is_train=True, test_mode=False, args=args)
-    print("before val")
+    print("before val","🟩"*1000)
     if args.disable_eval_during_finetuning:
         dataset_val = None
     else:
