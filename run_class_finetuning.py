@@ -515,8 +515,6 @@ def main(args, ds_init):
                     f.write(json.dumps(log_stats) + "\n")
         exit(0)
 
-    print("here","🟩"*10000)
-    print("here","🟩"*10000)
     print(f"Start training for {args.epochs} epochs")
     start_time = time.time()
     max_accuracy = 0.0
@@ -533,6 +531,7 @@ def main(args, ds_init):
             lr_schedule_values=lr_schedule_values, wd_schedule_values=wd_schedule_values,
             num_training_steps_per_epoch=num_training_steps_per_epoch, update_freq=args.update_freq,
         )
+        print("here")
         if args.output_dir and args.save_ckpt:
             if (epoch + 1) % args.save_ckpt_freq == 0 or epoch + 1 == args.epochs:
                 utils.save_model(
