@@ -46,6 +46,7 @@ class VideoClsDataset(Dataset):
             raise ImportError("Unable to import `decord` which is required to read videos.")
 
         import pandas as pd
+        print(self.anno_path)
         cleaned = pd.read_csv(self.anno_path, header=None, delimiter=' ')
         self.dataset_samples = list(cleaned.values[:, 0])
         if self.data_path is not None:

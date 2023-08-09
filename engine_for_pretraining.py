@@ -52,7 +52,9 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         videos = videos.to(device, non_blocking=True)
         videos_for_teacher = videos_for_teacher.to(device, non_blocking=True)
         bool_masked_pos = bool_masked_pos.to(device, non_blocking=True).flatten(1).to(torch.bool)
-        _, _, T, _, _ = videos.shape
+        _, _, T, H, W = videos.shape
+
+        assert H == W == 224, "input size must be 224 for CLIP"
 
         #normalization used in CLIP
         clip_mean = (0.48145466, 0.4578275, 0.40821073)
