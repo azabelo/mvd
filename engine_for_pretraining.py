@@ -10,6 +10,7 @@ from timm.data.constants import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
 
 import wandb
+import torch.nn.functional as F
 
 Loss_func_choice = {'L1': torch.nn.L1Loss, 'L2': torch.nn.MSELoss, 'SmoothL1': torch.nn.SmoothL1Loss}
 
@@ -53,13 +54,18 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         bool_masked_pos = bool_masked_pos.to(device, non_blocking=True).flatten(1).to(torch.bool)
         _, _, T, _, _ = videos.shape
 
+        #normalization used in CLIP
+        clip_mean = (0.48145466, 0.4578275, 0.40821073)
+        clip_std = (0.26862954, 0.26130258, 0.27577711)
+
         with torch.cuda.amp.autocast():
             output_features, output_video_features = model(videos, bool_masked_pos)
             with torch.no_grad():
                 image_teacher_model.eval()
                 if time_stride_loss:
                     teacher_features = image_teacher_model(
-                        rearrange(videos_for_teacher[:, :, ::tubelet_size, :, :], 'b c t h w -> (b t) c h w'),
+                        F.normalize(rearrange(videos_for_teacher[:, :, ::tubelet_size, :, :], 'b c t h w -> (b t) c h w'),
+                                    clip_mean, clip_std)
                     )
                     teacher_features = rearrange(teacher_features, '(b t) l c -> b (t l) c', t=T//tubelet_size)
                 else:
