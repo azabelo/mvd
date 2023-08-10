@@ -10,7 +10,7 @@ from timm.data.constants import IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD
 from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
 
 import wandb
-import torch.nn.functional as F
+import torchvision.transforms.functional as TF
 
 Loss_func_choice = {'L1': torch.nn.L1Loss, 'L2': torch.nn.MSELoss, 'SmoothL1': torch.nn.SmoothL1Loss}
 
@@ -52,13 +52,15 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         videos = videos.to(device, non_blocking=True)
         videos_for_teacher = videos_for_teacher.to(device, non_blocking=True)
         bool_masked_pos = bool_masked_pos.to(device, non_blocking=True).flatten(1).to(torch.bool)
-        _, _, T, H, W = videos.shape
+        B, C, T, H, W = videos.shape
 
         assert H == W == 224, "input size must be 224 for CLIP"
 
         #normalization used in CLIP
-        clip_mean = (0.48145466, 0.4578275, 0.40821073)
-        clip_std = (0.26862954, 0.26130258, 0.27577711)
+        clip_mean = [0.48145466, 0.4578275, 0.40821073]
+        clip_std = [0.26862954, 0.26130258, 0.27577711]
+        mean_tensor = torch.tensor(clip_mean)
+        std_tensor = torch.tensor(clip_std)
 
         with torch.cuda.amp.autocast():
             output_features, output_video_features = model(videos, bool_masked_pos)
@@ -66,8 +68,8 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
                 image_teacher_model.eval()
                 if time_stride_loss:
                     teacher_features = image_teacher_model(
-                        F.normalize(rearrange(videos_for_teacher[:, :, ::tubelet_size, :, :], 'b c t h w -> (b t) c h w'),
-                                    clip_mean, clip_std)
+                        TF.normalize(rearrange(videos_for_teacher[:, :, ::tubelet_size, :, :], 'b c t h w -> (b t) c h w'),
+                                    mean=clip_mean, std=clip_std)
                     )
                     teacher_features = rearrange(teacher_features, '(b t) l c -> b (t l) c', t=T//tubelet_size)
                 else:
@@ -87,6 +89,9 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
                     video_teacher_features = LN_vid(video_teacher_features)
 
             B, _, D = output_features.shape
+            # print(output_features.shape, teacher_features.shape)
+            # print(teacher_features[bool_masked_pos].shape)
+            # print(teacher_features[bool_masked_pos].reshape(B, -1, D).shape)
             loss_img_feat = loss_func_img_feat(
                 input=output_features,
                 target=teacher_features[bool_masked_pos].reshape(B, -1, D)

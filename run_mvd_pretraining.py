@@ -175,6 +175,21 @@ def get_image_teacher_model(args):
     # getting clip model
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model, preprocess = clip.load("ViT-B/16", device=device)
+    #
+    # # Function to hook into the layers and record the order
+    # def hook_fn(module, input, output):
+    #     print("Layer:", module.__class__.__name__, "Shape:", len(output), "output shape:", output[0].shape)
+    #
+    # # Iterate through the model's modules and register hooks
+    # for name, layer in model.visual.named_modules():
+    #     layer.register_forward_hook(hook_fn)
+    #
+    # # Perform a forward pass to trigger the hooks
+    # shape = (1, 3, 224, 224)
+    # input_data = torch.rand(*shape, dtype=torch.float16, device="cuda")
+    #
+    # output = model.visual(input_data)
+    # exit(0)
     return model.visual
     #
     # print(f"Creating teacher model: {args.image_teacher_model}")
@@ -280,49 +295,42 @@ def main(args):
     n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
 
     image_teacher_model = get_image_teacher_model(args)
-
-    if args.image_teacher_model_ckpt_path:
-        if args.image_teacher_model_ckpt_path.startswith('https'):
-            checkpoint = torch.hub.load_state_dict_from_url(
-                args.image_teacher_model_ckpt_path, map_location='cpu', check_hash=True)
-        else:
-            checkpoint = torch.load(args.image_teacher_model_ckpt_path, map_location='cpu')
-
-        print("Load teacher ckpt from %s" % args.image_teacher_model_ckpt_path)
-        checkpoint_model = None
-        for model_key in args.model_key.split('|'):
-            if model_key in checkpoint:
-                checkpoint_model = checkpoint[model_key]
-                print("Load state_dict by model_key = %s" % model_key)
-                break
-
-        if checkpoint_model is None:
-            checkpoint_model = checkpoint
-
-        for k in ['head.weight', 'head.bias']:
-            if k in checkpoint_model:
-                print(f"Removing key {k} from pretrained checkpoint")
-                del checkpoint_model[k]
-
-        all_keys = list(checkpoint_model.keys())
-        new_dict = OrderedDict()
-        for key in all_keys:
-            if key.startswith('backbone.'):
-                new_dict[key[9:]] = checkpoint_model[key]
-            elif 'pos_embed' in key:
-                continue
-            else:
-                new_dict[key] = checkpoint_model[key]
-        checkpoint_model = new_dict
-
-        utils.load_state_dict(image_teacher_model, checkpoint_model, prefix=args.model_prefix)
-        print(image_teacher_model)
-
-        def count_parameters(model):
-            return sum(p.numel() for p in model.parameters())
-        print("Number of parameters in teacher model = %s" % str(count_parameters(image_teacher_model)))
-
-        time.sleep(3)
+    #
+    # if args.image_teacher_model_ckpt_path:
+    #     if args.image_teacher_model_ckpt_path.startswith('https'):
+    #         checkpoint = torch.hub.load_state_dict_from_url(
+    #             args.image_teacher_model_ckpt_path, map_location='cpu', check_hash=True)
+    #     else:
+    #         checkpoint = torch.load(args.image_teacher_model_ckpt_path, map_location='cpu')
+    #
+    #     print("Load teacher ckpt from %s" % args.image_teacher_model_ckpt_path)
+    #     checkpoint_model = None
+    #     for model_key in args.model_key.split('|'):
+    #         if model_key in checkpoint:
+    #             checkpoint_model = checkpoint[model_key]
+    #             print("Load state_dict by model_key = %s" % model_key)
+    #             break
+    #
+    #     if checkpoint_model is None:
+    #         checkpoint_model = checkpoint
+    #
+    #     for k in ['head.weight', 'head.bias']:
+    #         if k in checkpoint_model:
+    #             print(f"Removing key {k} from pretrained checkpoint")
+    #             del checkpoint_model[k]
+    #
+    #     all_keys = list(checkpoint_model.keys())
+    #     new_dict = OrderedDict()
+    #     for key in all_keys:
+    #         if key.startswith('backbone.'):
+    #             new_dict[key[9:]] = checkpoint_model[key]
+    #         elif 'pos_embed' in key:
+    #             continue
+    #         else:
+    #             new_dict[key] = checkpoint_model[key]
+    #     checkpoint_model = new_dict
+    #
+    #     utils.load_state_dict(image_teacher_model, checkpoint_model, prefix=args.model_prefix)
 
     image_teacher_model.to(device)
 
@@ -451,7 +459,7 @@ def main(args):
 
 
 if __name__ == '__main__':
-    print("changed")
+
     opts = get_args()
     if opts.output_dir:
         Path(opts.output_dir).mkdir(parents=True, exist_ok=True)
