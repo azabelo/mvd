@@ -15,10 +15,14 @@ import wandb
 
 def train_class_batch(model, samples, target, criterion):
     outputs = model(samples)
+    print("here")
     print(outputs.shape)
     print(target.shape)
     print(target)
+    print(outputs)
+
     loss = criterion(outputs, target)
+    print("done")
     return loss, outputs
 
 
@@ -60,6 +64,8 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                     param_group["weight_decay"] = wd_schedule_values[it]
 
         samples = samples.to(device, non_blocking=True)
+        print("here")
+        print(targets)
         targets = targets.to(device, non_blocking=True)
 
         if mixup_fn is not None:
@@ -133,7 +139,14 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                 weight_decay_value = group["weight_decay"]
         metric_logger.update(weight_decay=weight_decay_value)
         metric_logger.update(grad_norm=grad_norm)
-
+        print("here2")
+        print(loss_value)
+        print(class_acc)
+        print(loss_scale_value)
+        print(max_lr)
+        print(min_lr)
+        print(weight_decay_value)
+        print(grad_norm)
         if log_writer is not None:
             log_writer.update(loss=loss_value, head="loss")
             log_writer.update(class_acc=class_acc, head="loss")
@@ -144,7 +157,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
             log_writer.update(grad_norm=grad_norm, head="opt")
 
             log_writer.set_step()
-
+        print("here3")
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger)
