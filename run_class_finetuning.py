@@ -10,6 +10,7 @@ from functools import partial
 from pathlib import Path
 from collections import OrderedDict
 
+
 from timm.models import create_model
 from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
 from timm.utils import ModelEma
@@ -220,6 +221,7 @@ def get_args():
 
 
 def main(args, ds_init):
+
     wandb.init(project='MVD+CLIP finetuning')
     # Log the arguments to wandb
     wandb.config.update(args)

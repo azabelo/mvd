@@ -190,6 +190,7 @@ def get_image_teacher_model(args):
     #
     # output = model.visual(input_data)
     # exit(0)
+
     return model.visual
     #
     # print(f"Creating teacher model: {args.image_teacher_model}")

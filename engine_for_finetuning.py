@@ -15,6 +15,8 @@ import wandb
 
 def train_class_batch(model, samples, target, criterion):
     outputs = model(samples)
+    print(outputs.shape)
+    print(target.shape)
     loss = criterion(outputs, target)
     return loss, outputs
 
@@ -60,6 +62,8 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
         targets = targets.to(device, non_blocking=True)
 
         if mixup_fn is not None:
+            print(samples.shape)
+            print(targets.shape)
             samples, targets = mixup_fn(samples, targets)
 
         if loss_scaler is None:
