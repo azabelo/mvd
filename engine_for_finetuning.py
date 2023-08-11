@@ -61,13 +61,10 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                     param_group["weight_decay"] = wd_schedule_values[it]
 
         samples = samples.to(device, non_blocking=True)
-        print("here")
         print(targets)
         targets = targets.to(device, non_blocking=True)
 
         if mixup_fn is not None:
-            print(samples.shape)
-            print(targets.shape)
             samples, targets = mixup_fn(samples, targets)
 
         if loss_scaler is None:
