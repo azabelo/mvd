@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Check if four arguments are provided
-if [ $# -ne 10 ]; then
+if [ $# -ne 9 ]; then
     echo "please provide GPS MASTER_PORT MASTER_ADDR (localhost when using only 1 GPU) BATCH_SIZE INITIAL_LR UPDATE_FREQ EPOCHS WARMUP SAMPLING_RATE"
     exit 1
 fi
@@ -22,8 +22,8 @@ DATA_PATH='train.csv'
 DATA_ROOT='hmdb51_mp4'
 
 OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
-        --master_port ${MASTER_PORT} --nnodes=${NODE_COUNT} \
-        --node_rank=${RANK} --master_addr=${MASTER_ADDR} \
+        --master_port ${MASTER_PORT} --nnodes=1 \
+        --node_rank=0 --master_addr=${MASTER_ADDR} \
         run_mvd_pretraining.py \
         --data_path ${DATA_PATH} \
         --data_root ${DATA_ROOT} \
