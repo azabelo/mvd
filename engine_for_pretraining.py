@@ -108,7 +108,6 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
             loss = image_loss_weight * loss_img_feat + video_loss_weight * loss_vid_feat
 
         loss_value = loss.item()
-        wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value})
 
         if not math.isfinite(loss_value):
             print("Loss is {}, stopping training".format(loss_value))
@@ -135,6 +134,9 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         for group in optimizer.param_groups:
             min_lr = min(min_lr, group["lr"])
             max_lr = max(max_lr, group["lr"])
+
+        wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value, " train_img_feat_loss": loss_value_img_feat,
+                   "min_lr": min_lr, "max_lr": max_lr})
 
         metric_logger.update(lr=max_lr)
         metric_logger.update(min_lr=min_lr)
