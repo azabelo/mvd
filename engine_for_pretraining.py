@@ -136,7 +136,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
             max_lr = max(max_lr, group["lr"])
 
         wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value, " train_img_feat_loss": loss_value_img_feat,
-                   "min_lr": min_lr, "max_lr": max_lr})
+           "min_lr": min_lr, "max_lr": max_lr, "train_vid_feat_loss": loss_value_vid_feat})
 
         metric_logger.update(lr=max_lr)
         metric_logger.update(min_lr=min_lr)
