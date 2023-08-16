@@ -379,6 +379,8 @@ def main(args):
 
     total_batch_size = args.batch_size * args.num_sample * args.update_freq * utils.get_world_size()
     num_training_steps_per_epoch = len(dataset_train) // int(total_batch_size / args.num_sample)
+    for i in range(1000):
+        print(num_training_steps_per_epoch)
     args.lr = args.lr * total_batch_size / 256
     args.min_lr = args.min_lr * total_batch_size / 256
     args.warmup_lr = args.warmup_lr * total_batch_size / 256
