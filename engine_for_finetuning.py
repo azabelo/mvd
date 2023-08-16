@@ -117,13 +117,13 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
         metric_logger.update(class_acc=class_acc)
         metric_logger.update(loss_scale=loss_scale_value)
 
-        wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value, "train_acc": class_acc})
-
         min_lr = 10.
         max_lr = 0.
         for group in optimizer.param_groups:
             min_lr = min(min_lr, group["lr"])
             max_lr = max(max_lr, group["lr"])
+        wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value, "train_acc": class_acc,"max_lr": max_lr, "min_lr": min_lr})
+
 
         metric_logger.update(lr=max_lr)
         metric_logger.update(min_lr=min_lr)
