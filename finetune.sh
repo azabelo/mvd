@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Check if four arguments are provided
-if [ $# -ne 8 ]; then
+if [ $# -ne 9 ]; then
     echo "please provide GPS MASTER_PORT MASTER_ADDR (localhost when using only 1 GPU) BATCH_SIZE LR MODEL_PATH EPCHOS UPDATE_FREQ NUM_SAMPLES"
     exit 1
 fi
