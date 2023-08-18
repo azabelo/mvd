@@ -29,7 +29,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
 
     # knn accuracy
 
-    knn_classifier3 = KNeighborsClassifier(n_neighbors=3)
+    knn_classifier3 = KNeighborsClassifier(n_neighbors=3, algorithm='brute', metric='cosine')
     #knn_classifier5 = KNeighborsClassifier(n_neighbors=5)
 
     # create a numpy array to store the 1568x768 video features for each video
@@ -88,13 +88,13 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         # print("knn accuracy for 5 neighbors: ", knn_accuracy5)
 
         # Apply t-SNE for dimensionality reduction
-        n_components = 3  # Number of dimensions in the reduced space (can be adjusted)
-        tsne = TSNE(n_components=n_components, random_state=42)
-        train_tsne = tsne.fit_transform(train_scaled)
-        test_tsne = tsne.fit_transform(test_scaled)
+        # n_components = 3  # Number of dimensions in the reduced space (can be adjusted)
+        # tsne = TSNE(n_components=n_components, random_state=42)
+        # train_scaled = tsne.fit_transform(train_scaled)
+        # test_scaled = tsne.fit_transform(test_scaled)
 
-        knn_classifier3.fit(train_tsne, train_labels)
-        predictions3 = knn_classifier3.predict(test_tsne)
+        knn_classifier3.fit(train_scaled, train_labels)
+        predictions3 = knn_classifier3.predict(test_scaled)
         knn_accuracy3 = accuracy_score(test_labels, predictions3)
         print("knn accuracy for 3 neighbors: ", knn_accuracy3)
 

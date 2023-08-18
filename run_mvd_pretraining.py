@@ -287,6 +287,7 @@ def main(args):
     num_tasks = utils.get_world_size()
     global_rank = utils.get_rank()
     sampler_val = torch.utils.data.SequentialSampler(dataset_val)
+    # dont forget that you added shuffle and took something out
     data_loader_val = torch.utils.data.DataLoader(
     dataset_val,
     batch_size=int(args.batch_size),
