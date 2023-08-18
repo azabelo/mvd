@@ -335,42 +335,43 @@ def main(args):
     n_parameters = sum(p.numel() for p in model.parameters() if p.requires_grad)
 
     image_teacher_model = get_image_teacher_model(args)
-    #
-    # if args.image_teacher_model_ckpt_path:
-    #     if args.image_teacher_model_ckpt_path.startswith('https'):
-    #         checkpoint = torch.hub.load_state_dict_from_url(
-    #             args.image_teacher_model_ckpt_path, map_location='cpu', check_hash=True)
-    #     else:
-    #         checkpoint = torch.load(args.image_teacher_model_ckpt_path, map_location='cpu')
-    #
-    #     print("Load teacher ckpt from %s" % args.image_teacher_model_ckpt_path)
-    #     checkpoint_model = None
-    #     for model_key in args.model_key.split('|'):
-    #         if model_key in checkpoint:
-    #             checkpoint_model = checkpoint[model_key]
-    #             print("Load state_dict by model_key = %s" % model_key)
-    #             break
-    #
-    #     if checkpoint_model is None:
-    #         checkpoint_model = checkpoint
-    #
-    #     for k in ['head.weight', 'head.bias']:
-    #         if k in checkpoint_model:
-    #             print(f"Removing key {k} from pretrained checkpoint")
-    #             del checkpoint_model[k]
-    #
-    #     all_keys = list(checkpoint_model.keys())
-    #     new_dict = OrderedDict()
-    #     for key in all_keys:
-    #         if key.startswith('backbone.'):
-    #             new_dict[key[9:]] = checkpoint_model[key]
-    #         elif 'pos_embed' in key:
-    #             continue
-    #         else:
-    #             new_dict[key] = checkpoint_model[key]
-    #     checkpoint_model = new_dict
-    #
-    #     utils.load_state_dict(image_teacher_model, checkpoint_model, prefix=args.model_prefix)
+
+    if not args.use_clip:
+    if args.image_teacher_model_ckpt_path:
+        if args.image_teacher_model_ckpt_path.startswith('https'):
+            checkpoint = torch.hub.load_state_dict_from_url(
+                args.image_teacher_model_ckpt_path, map_location='cpu', check_hash=True)
+        else:
+            checkpoint = torch.load(args.image_teacher_model_ckpt_path, map_location='cpu')
+
+        print("Load teacher ckpt from %s" % args.image_teacher_model_ckpt_path)
+        checkpoint_model = None
+        for model_key in args.model_key.split('|'):
+            if model_key in checkpoint:
+                checkpoint_model = checkpoint[model_key]
+                print("Load state_dict by model_key = %s" % model_key)
+                break
+
+        if checkpoint_model is None:
+            checkpoint_model = checkpoint
+
+        for k in ['head.weight', 'head.bias']:
+            if k in checkpoint_model:
+                print(f"Removing key {k} from pretrained checkpoint")
+                del checkpoint_model[k]
+
+        all_keys = list(checkpoint_model.keys())
+        new_dict = OrderedDict()
+        for key in all_keys:
+            if key.startswith('backbone.'):
+                new_dict[key[9:]] = checkpoint_model[key]
+            elif 'pos_embed' in key:
+                continue
+            else:
+                new_dict[key] = checkpoint_model[key]
+        checkpoint_model = new_dict
+
+        utils.load_state_dict(image_teacher_model, checkpoint_model, prefix=args.model_prefix)
 
     image_teacher_model.to(device)
 
