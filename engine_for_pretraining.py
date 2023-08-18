@@ -88,7 +88,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         # print("knn accuracy for 5 neighbors: ", knn_accuracy5)
 
         # Apply t-SNE for dimensionality reduction
-        n_components = 10  # Number of dimensions in the reduced space (can be adjusted)
+        n_components = 3  # Number of dimensions in the reduced space (can be adjusted)
         tsne = TSNE(n_components=n_components, random_state=42)
         train_tsne = tsne.fit_transform(train_scaled)
         test_tsne = tsne.transform(test_scaled)
