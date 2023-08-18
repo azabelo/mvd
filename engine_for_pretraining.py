@@ -30,9 +30,12 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
     knn_classifier5 = KNeighborsClassifier(n_neighbors=5)
 
     # create a numpy array to store the 1568x768 video features for each video
-    train_videos = np.empty((0, 1568*768))
+    # train_videos = np.empty((0, 1568*768))
+    # test_videos = np.empty((0, 1568*768))
+    # use only CLS
+    train_videos = np.empty((0, 768))
+    test_videos = np.empty((0, 768))
     train_labels = np.empty(0)
-    test_videos = np.empty((0, 1568*768))
     test_labels = np.empty(0)
 
     with torch.no_grad():
@@ -45,18 +48,20 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
 
             videos, labels, _ = batch
 
-            print(labels)
             # make an empty tensor of False values with shape [8, 1568]
             # should be batch size, not 8 for flexibility
             empty_mask = torch.zeros((8, 1568), dtype=torch.bool)
             output_features_for_knn, output_features_video_for_knn = model(videos.cuda(), empty_mask.cuda())
-            output_features_video_for_knn = output_features_video_for_knn.cpu().numpy()
+            #output_features_video_for_knn = output_features_video_for_knn.cpu().numpy()
+            cls_tok_knn = output_features_video_for_knn[:, 0, :]
             if index > 40:
-                test_videos = np.append(test_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
-                test_labels = np.append(test_labels, labels.cpu().numpy(), axis=0)
+                # test_videos = np.append(test_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
+                # test_labels = np.append(test_labels, labels.cpu().numpy(), axis=0)
+                test_videos = np.append(test_videos, cls_tok_knn.cpu().numpy(), axis=0)
             else:
-                train_videos = np.append(train_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
-                train_labels = np.append(train_labels, labels.cpu().numpy(), axis=0)
+                # train_videos = np.append(train_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
+                # train_labels = np.append(train_labels, labels.cpu().numpy(), axis=0)
+                train_videos = np.append(train_videos, cls_tok_knn.cpu().numpy(), axis=0)
 
         knn_classifier3.fit(train_videos, train_labels)
         predictions3 = knn_classifier3.predict(test_videos)
