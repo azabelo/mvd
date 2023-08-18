@@ -173,38 +173,47 @@ def get_args():
     parser.add_argument('--dist_on_itp', action='store_true')
     parser.add_argument('--dist_url', default='env://', help='url used to set up distributed training')
 
+    parser.add_argument('--use_clip', action='store_true', default=False)
+
     return parser.parse_args()
 
 
 def get_image_teacher_model(args):
-    # getting clip model
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    model, preprocess = clip.load("ViT-B/16", device=device)
-    #
-    # # Function to hook into the layers and record the order
-    # def hook_fn(module, input, output):
-    #     print("Layer:", module.__class__.__name__, "Shape:", len(output), "output shape:", output[0].shape)
-    #
-    # # Iterate through the model's modules and register hooks
-    # for name, layer in model.visual.named_modules():
-    #     layer.register_forward_hook(hook_fn)
-    #
-    # # Perform a forward pass to trigger the hooks
-    # shape = (1, 3, 224, 224)
-    # input_data = torch.rand(*shape, dtype=torch.float16, device="cuda")
-    #
-    # output = model.visual(input_data)
-    # exit(0)
+    if args.use_clip:
+        args.image_teacher_model = 'vit_base_patch16_224'
+        args.image_teacher_model_ckpt_path = 'clip_model.pth'
 
-    return model.visual
-    #
-    # print(f"Creating teacher model: {args.image_teacher_model}")
-    # model = create_model(
-    #     args.image_teacher_model,
-    #     pretrained=False,
-    #     img_size=args.teacher_input_size,
-    # )
-    # return model
+        # getting clip model
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        model, preprocess = clip.load("ViT-B/16", device=device)
+        #
+        # # Function to hook into the layers and record the order
+        # def hook_fn(module, input, output):
+        #     print("Layer:", module.__class__.__name__, "Shape:", len(output), "output shape:", output[0].shape)
+        #
+        # # Iterate through the model's modules and register hooks
+        # for name, layer in model.visual.named_modules():
+        #     layer.register_forward_hook(hook_fn)
+        #
+        # # Perform a forward pass to trigger the hooks
+        # shape = (1, 3, 224, 224)
+        # input_data = torch.rand(*shape, dtype=torch.float16, device="cuda")
+        #
+        # output = model.visual(input_data)
+        # exit(0)
+
+        return model.visual
+    else:
+        args.image_teacher_model = 'mae_teacher_vit_base_patch16'
+        args.image_teacher_model_ckpt_path = 'image_teacher.pth'
+
+        print(f"Creating teacher model: {args.image_teacher_model}")
+        model = create_model(
+            args.image_teacher_model,
+            pretrained=False,
+            img_size=args.teacher_input_size,
+        )
+        return model
 
 
 def get_video_teacher_model(args):

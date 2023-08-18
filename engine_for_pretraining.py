@@ -30,7 +30,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
     # knn accuracy
 
     knn_classifier3 = KNeighborsClassifier(n_neighbors=3)
-    knn_classifier5 = KNeighborsClassifier(n_neighbors=5)
+    #knn_classifier5 = KNeighborsClassifier(n_neighbors=5)
 
     # create a numpy array to store the 1568x768 video features for each video
     # train_videos = np.empty((0, 1568*768))
@@ -46,14 +46,14 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         for batch in data_for_knn:
             print("knn step: ", index)
             index += 1
-            if index > 200:
+            if index > 1000:
                 break
 
             videos, labels, _ = batch
 
             # make an empty tensor of False values with shape [8, 1568]
             # should be batch size, not 8 for flexibility
-            empty_mask = torch.ones((8, 1568), dtype=torch.bool)
+            empty_mask = torch.zeros((8, 1568), dtype=torch.bool)
             output_features_for_knn, output_features_video_for_knn = model(videos.cuda(), empty_mask.cuda())
             #output_features_video_for_knn = output_features_video_for_knn.cpu().numpy()
             cls_tok_knn = output_features_video_for_knn[:, 0, :]
@@ -98,14 +98,12 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         knn_accuracy3 = accuracy_score(test_labels, predictions3)
         print("knn accuracy for 3 neighbors: ", knn_accuracy3)
 
-        knn_classifier5.fit(train_tsne, train_labels)
-        predictions5 = knn_classifier5.predict(test_tsne)
-        knn_accuracy5 = accuracy_score(test_labels, predictions5)
-        print("knn accuracy for 5 neighbors: ", knn_accuracy5)
+        # knn_classifier5.fit(train_tsne, train_labels)
+        # predictions5 = knn_classifier5.predict(test_tsne)
+        # knn_accuracy5 = accuracy_score(test_labels, predictions5)
+        # print("knn accuracy for 5 neighbors: ", knn_accuracy5)
 
-
-
-        wandb.log({"knn_accuracy3": knn_accuracy3, "knn_accuracy5": knn_accuracy5})
+        wandb.log({"knn_accuracy3": knn_accuracy3, })
 
     model.train()
     metric_logger = utils.MetricLogger(delimiter="  ")
