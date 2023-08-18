@@ -14,6 +14,8 @@ import torchvision.transforms.functional as TF
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 
 Loss_func_choice = {'L1': torch.nn.L1Loss, 'L2': torch.nn.MSELoss, 'SmoothL1': torch.nn.SmoothL1Loss}
 
@@ -63,13 +65,24 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
                 train_labels = np.append(train_labels, labels.cpu().numpy(), axis=0)
                 train_videos = np.append(train_videos, cls_tok_knn.cpu().numpy(), axis=0)
 
-        knn_classifier3.fit(train_videos, train_labels)
-        predictions3 = knn_classifier3.predict(test_videos)
+        # Standardize the feature values
+        scaler = StandardScaler()
+        train_scaled = scaler.fit_transform(train_videos)
+        test_scaled = scaler.transform(test_videos)
+
+        # Apply PCA for dimensionality reduction
+        n_components = 100  # Number of principal components to keep
+        pca = PCA(n_components=n_components)
+        train_pca = pca.fit_transform(train_scaled)
+        test_pca = pca.transform(test_scaled)
+
+        knn_classifier3.fit(train_pca, train_labels)
+        predictions3 = knn_classifier3.predict(test_pca)
         knn_accuracy3 = accuracy_score(test_labels, predictions3)
         print("knn accuracy for 3 neighbors: ", knn_accuracy3)
 
-        knn_classifier5.fit(train_videos, train_labels)
-        predictions5 = knn_classifier5.predict(test_videos)
+        knn_classifier5.fit(train_pca, train_labels)
+        predictions5 = knn_classifier5.predict(test_pca)
         knn_accuracy5 = accuracy_score(test_labels, predictions5)
         print("knn accuracy for 5 neighbors: ", knn_accuracy5)
 
