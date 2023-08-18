@@ -277,7 +277,6 @@ def main(args):
     dataset_val, _ = build_dataset(is_train=False, test_mode=False, args=args2)
     num_tasks = utils.get_world_size()
     global_rank = utils.get_rank()
-
     sampler_val = torch.utils.data.SequentialSampler(dataset_val)
     data_loader_val = torch.utils.data.DataLoader(
     dataset_val, sampler=sampler_val,

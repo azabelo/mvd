@@ -44,12 +44,16 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
     knn_classifier3 = KNeighborsClassifier(n_neighbors=3)
     knn_classifier7 = KNeighborsClassifier(n_neighbors=7)
 
+    # for i, data_point in enumerate(data_loader_val):
+    #     video, label, _ = data_point
+    #     print(video.shape)
+    #     print(label)
+
     import random
     with torch.no_grad():
         for batch in data_for_knn:
-            print(data_for_knn)
-            print(len(data_for_knn))
-            videos, labels = batch
+            print(len(batch))
+            videos, labels, _ = batch
             # Print the label and shape for each video in the batch
             for label, video in zip(labels, videos):
                 print('Label:', label, "shape:", video.shape)
