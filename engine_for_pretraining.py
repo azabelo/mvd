@@ -55,7 +55,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
              #   print('Label:', label, "shape:", video.shape)
                 #3 16 224 224
             #make an empty tensor of False values with shape [8, 1568]
-            empty_mask = torch.zeros((8, 1568), dtype=torch.bool)
+            empty_mask = torch.zeros((8, 12, 1568), dtype=torch.bool)
             print(empty_mask)
             output_features = model(videos.cuda(), empty_mask.cuda())
             print(output_features.shape)
