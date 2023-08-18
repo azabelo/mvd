@@ -15,6 +15,8 @@ import wandb
 
 def train_class_batch(model, samples, target, criterion):
     outputs = model(samples)
+    print("jere")
+    print(outputs.shape)
     # print(outputs.shape)
     # print(target.shape)
     # print(target)
