@@ -53,7 +53,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
 
             # make an empty tensor of False values with shape [8, 1568]
             # should be batch size, not 8 for flexibility
-            empty_mask = torch.zeros((8, 1568), dtype=torch.bool)
+            empty_mask = torch.zeros((videos.shape[0], 1568), dtype=torch.bool)
             output_features_for_knn, output_features_video_for_knn = model(videos.cuda(), empty_mask.cuda())
             #output_features_video_for_knn = output_features_video_for_knn.cpu().numpy()
             cls_tok_knn = output_features_video_for_knn[:, 0, :]
