@@ -46,7 +46,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
             empty_mask = torch.zeros((8, 1568), dtype=torch.bool)
             output_features_for_knn, output_features_video_for_knn = model(videos.cuda(), empty_mask.cuda())
             output_features_video_for_knn = output_features_video_for_knn.cpu().numpy()
-            all_videos = np.append(all_videos, output_features_video_for_knn, axis=0).reshape(8, -1)
+            all_videos = np.append(all_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
             labels = labels.cpu().numpy()
             all_labels = np.append(all_labels, labels, axis=0)
 
