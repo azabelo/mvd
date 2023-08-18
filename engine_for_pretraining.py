@@ -91,7 +91,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         n_components = 3  # Number of dimensions in the reduced space (can be adjusted)
         tsne = TSNE(n_components=n_components, random_state=42)
         train_tsne = tsne.fit_transform(train_scaled)
-        test_tsne = tsne.transform(test_scaled)
+        test_tsne = tsne.fit_transform(test_scaled)
 
         knn_classifier3.fit(train_tsne, train_labels)
         predictions3 = knn_classifier3.predict(test_tsne)
