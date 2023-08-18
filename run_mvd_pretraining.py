@@ -180,6 +180,7 @@ def get_args():
 
 def get_image_teacher_model(args):
     if args.use_clip:
+        print("using clip")
         args.image_teacher_model = 'vit_base_patch16_224'
         args.image_teacher_model_ckpt_path = 'clip_model.pth'
 
@@ -204,6 +205,7 @@ def get_image_teacher_model(args):
 
         return model.visual
     else:
+        print("using default mae")
         args.image_teacher_model = 'mae_teacher_vit_base_patch16'
         args.image_teacher_model_ckpt_path = 'image_teacher.pth'
 
