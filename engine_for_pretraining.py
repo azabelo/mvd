@@ -11,6 +11,8 @@ from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy
 
 import wandb
 import torchvision.transforms.functional as TF
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
 
 Loss_func_choice = {'L1': torch.nn.L1Loss, 'L2': torch.nn.MSELoss, 'SmoothL1': torch.nn.SmoothL1Loss}
 
@@ -19,7 +21,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
                     device: torch.device, epoch: int, loss_scaler, max_norm: float = 0,
                     log_writer=None, lr_scheduler=None, start_steps=None, lr_schedule_values=None,
                     wd_schedule_values=None, update_freq=None, time_stride_loss=True, lr_scale=1.0,
-                    image_teacher_model=None, video_teacher_model=None, norm_feature=False):
+                    image_teacher_model=None, video_teacher_model=None, norm_feature=False,data_for_knn=None,):
 
     model.train()
     metric_logger = utils.MetricLogger(delimiter="  ")
@@ -163,4 +165,30 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger)
+
+    # knn accuracy
+
+    knn_classifier3 = KNeighborsClassifier(n_neighbors=3)
+    knn_classifier7 = KNeighborsClassifier(n_neighbors=7)
+
+    with torch.no_grad():
+        for batch in data_for_knn:
+            videos, labels = batch
+            # Print the label and shape for each video in the batch
+            for label, video in zip(labels, videos):
+                print('Label:', label, "shape:", video.shape)
+            # Assuming each batch contains a single video and its corresponding label
+            # print(batch)
+
+    #     for i, (videos, labels) in enumerate(val_loader):
+    #         videos = videos.cuda()
+    #         labels = labels.cuda()
+    #         output_features = model(videos)
+    #         output_features = output_features.cpu().numpy()
+    #         labels = labels.cpu().numpy()
+    #         knn_classifier3.fit(output_features, labels)
+    #         knn_classifier7.fit(output_features, labels)
+
+
+
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}

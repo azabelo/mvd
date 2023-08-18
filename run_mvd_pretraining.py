@@ -1,4 +1,5 @@
 import argparse
+import copy
 import datetime
 import numpy as np
 import time
@@ -25,6 +26,10 @@ import sys
 import os
 
 import clip
+
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
+from datasets import build_dataset
 
 
 def get_args():
@@ -261,6 +266,28 @@ def main(args):
     # get dataset
     dataset_train = build_distillation_dataset(args)
 
+    args2 = copy.deepcopy(args)
+    args2.data_set = 'HMDB51'
+    args2.nb_classes = 51
+    args2.data_path = 'finetune_splits'
+    args2.test_num_segment = 8
+    args2.test_num_crop = 1
+    args2.short_side_size = 256
+    args2.batch_size = 8
+    dataset_val, _ = build_dataset(is_train=False, test_mode=False, args=args2)
+    num_tasks = utils.get_world_size()
+    global_rank = utils.get_rank()
+
+    sampler_val = torch.utils.data.SequentialSampler(dataset_val)
+    data_loader_val = torch.utils.data.DataLoader(
+    dataset_val, sampler=sampler_val,
+    batch_size=int(1.5 * args.batch_size),
+    num_workers=args.num_workers,
+    pin_memory=args.pin_mem,
+    drop_last=False
+    )
+
+
     num_tasks = utils.get_world_size()
     global_rank = utils.get_rank()
     sampler_rank = global_rank
@@ -437,6 +464,7 @@ def main(args):
             image_teacher_model=image_teacher_model,
             video_teacher_model=video_teacher_model,
             norm_feature=args.norm_feature,
+            data_for_knn=data_loader_val,
         )
 
         if args.output_dir:
