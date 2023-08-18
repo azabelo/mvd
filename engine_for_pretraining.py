@@ -180,6 +180,8 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         for batch in data_for_knn:
             print("knn step: ", index)
             index += 1
+            if index > 40:
+                break
 
             videos, labels, _ = batch
             # make an empty tensor of False values with shape [8, 1568]
