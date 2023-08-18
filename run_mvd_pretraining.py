@@ -279,7 +279,7 @@ def main(args):
     global_rank = utils.get_rank()
     sampler_val = torch.utils.data.SequentialSampler(dataset_val)
     data_loader_val = torch.utils.data.DataLoader(
-    dataset_val, sampler=sampler_val,
+    dataset_val,
     batch_size=int(args.batch_size),
     num_workers=args.num_workers,
     pin_memory=args.pin_mem,
