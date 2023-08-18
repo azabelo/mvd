@@ -13,6 +13,7 @@ import wandb
 import torchvision.transforms.functional as TF
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
+import numpy as np
 
 Loss_func_choice = {'L1': torch.nn.L1Loss, 'L2': torch.nn.MSELoss, 'SmoothL1': torch.nn.SmoothL1Loss}
 
@@ -39,40 +40,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
 
     tubelet_size = args.tubelet_size
 
-    # knn accuracy
 
-    knn_classifier3 = KNeighborsClassifier(n_neighbors=3)
-    knn_classifier7 = KNeighborsClassifier(n_neighbors=7)
-
-
-    import random
-    with torch.no_grad():
-        for batch in data_for_knn:
-            print(len(batch))
-            videos, labels, _ = batch
-            # Print the label and shape for each video in the batch
-            #for label, video in zip(labels, videos):
-             #   print('Label:', label, "shape:", video.shape)
-                #3 16 224 224
-            #make an empty tensor of False values with shape [8, 1568]
-            empty_mask = torch.zeros((8, 1568), dtype=torch.bool)
-            print(empty_mask.shape)
-            print(videos.shape)
-            output_features_for_knn, output_features_video_for_knn = model(videos.cuda(), empty_mask.cuda())
-            print(output_features_video_for_knn.shape)
-
-            #wandb.log({"random_num": random.random()})
-            # Assuming each batch contains a single video and its corresponding label
-            # print(batch)
-
-    #     for i, (videos, labels) in enumerate(val_loader):
-    #         videos = videos.cuda()
-    #         labels = labels.cuda()
-    #         output_features = model(videos)
-    #         output_features = output_features.cpu().numpy()
-    #         labels = labels.cpu().numpy()
-    #         knn_classifier3.fit(output_features, labels)
-    #         knn_classifier7.fit(output_features, labels)
 
     for step, batch in enumerate(metric_logger.log_every(data_loader, print_freq, header)):
         # assign learning rate & weight decay for each step
@@ -204,6 +172,35 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger)
 
+    # knn accuracy
 
+    knn_classifier3 = KNeighborsClassifier(n_neighbors=3)
+    # knn_classifier7 = KNeighborsClassifier(n_neighbors=7)
+
+    # create a numpy array to store the 1568x768 video features for each video
+    all_videos = np.empty((0, 1568, 768))
+    all_labels = np.empty(0)
+
+    with torch.no_grad():
+        index = 0
+        for batch in data_for_knn:
+            print("knn step: ", index)
+            index += 1
+
+            videos, labels, _ = batch
+            # make an empty tensor of False values with shape [8, 1568]
+            # should be batch size, not 8 for flexibility
+            empty_mask = torch.zeros((8, 1568), dtype=torch.bool)
+            output_features_for_knn, output_features_video_for_knn = model(videos.cuda(), empty_mask.cuda())
+            output_features_video_for_knn = output_features_video_for_knn.cpu().numpy()
+            all_videos = np.append(all_videos, output_features_video_for_knn, axis=0)
+            labels = labels.cpu().numpy()
+            all_labels = np.append(all_labels, labels, axis=0)
+
+        knn_classifier3.fit(all_videos, all_labels)
+        predictions = knn_classifier3.predict(all_videos)
+        knn_accuracy = accuracy_score(all_labels, predictions)
+
+        wandb.log({"knn_accuracy": knn_accuracy})
 
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
