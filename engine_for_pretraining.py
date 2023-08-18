@@ -39,6 +39,31 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
 
     tubelet_size = args.tubelet_size
 
+    # knn accuracy
+
+    knn_classifier3 = KNeighborsClassifier(n_neighbors=3)
+    knn_classifier7 = KNeighborsClassifier(n_neighbors=7)
+
+    import random
+    with torch.no_grad():
+        for batch in data_for_knn:
+            videos, labels = batch
+            # Print the label and shape for each video in the batch
+            for label, video in zip(labels, videos):
+                print('Label:', label, "shape:", video.shape)
+                wandb.log({"random_num": random.random()})
+            # Assuming each batch contains a single video and its corresponding label
+            # print(batch)
+
+    #     for i, (videos, labels) in enumerate(val_loader):
+    #         videos = videos.cuda()
+    #         labels = labels.cuda()
+    #         output_features = model(videos)
+    #         output_features = output_features.cpu().numpy()
+    #         labels = labels.cpu().numpy()
+    #         knn_classifier3.fit(output_features, labels)
+    #         knn_classifier7.fit(output_features, labels)
+
     for step, batch in enumerate(metric_logger.log_every(data_loader, print_freq, header)):
         # assign learning rate & weight decay for each step
         update_step = step // update_freq
@@ -165,31 +190,6 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger)
-
-    # knn accuracy
-
-    knn_classifier3 = KNeighborsClassifier(n_neighbors=3)
-    knn_classifier7 = KNeighborsClassifier(n_neighbors=7)
-
-    import random
-    with torch.no_grad():
-        for batch in data_for_knn:
-            videos, labels = batch
-            # Print the label and shape for each video in the batch
-            for label, video in zip(labels, videos):
-                print('Label:', label, "shape:", video.shape)
-                wandb.log({"random_num": random.random()})
-            # Assuming each batch contains a single video and its corresponding label
-            # print(batch)
-
-    #     for i, (videos, labels) in enumerate(val_loader):
-    #         videos = videos.cuda()
-    #         labels = labels.cuda()
-    #         output_features = model(videos)
-    #         output_features = output_features.cpu().numpy()
-    #         labels = labels.cpu().numpy()
-    #         knn_classifier3.fit(output_features, labels)
-    #         knn_classifier7.fit(output_features, labels)
 
 
 
