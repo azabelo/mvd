@@ -24,7 +24,7 @@ DATA_ROOT='hmdb51_mp4'
 
 OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         --master_port ${MASTER_PORT} --nnodes=1 \
-        --node_rank=0 --master_addr=${MASTER_ADDR} \
+        --node_rank=0 --master_addr=localhost \
         run_mvd_pretraining.py \
         --data_path ${DATA_PATH} \
         --data_root ${DATA_ROOT} \
