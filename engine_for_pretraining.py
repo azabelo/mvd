@@ -58,7 +58,8 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
             for label, video in zip(labels, videos):
                 print('Label:', label, "shape:", video.shape)
                 #3 16 224 224
-                output_features = model(video.cuda())
+                empty_mask = torch.zeros((1, 1, 16, 224, 224))
+                output_features = model(video.cuda(), empty_mask.cuda())
                 print(output_features.shape)
                 wandb.log({"random_num": random.random()})
             # Assuming each batch contains a single video and its corresponding label
