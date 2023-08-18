@@ -57,6 +57,9 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
             # Print the label and shape for each video in the batch
             for label, video in zip(labels, videos):
                 print('Label:', label, "shape:", video.shape)
+                #3 16 224 224
+                output_features = model(video.cuda())
+                print(output_features.shape)
                 wandb.log({"random_num": random.random()})
             # Assuming each batch contains a single video and its corresponding label
             # print(batch)
