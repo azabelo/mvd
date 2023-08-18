@@ -44,28 +44,24 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
     knn_classifier3 = KNeighborsClassifier(n_neighbors=3)
     knn_classifier7 = KNeighborsClassifier(n_neighbors=7)
 
-    # for i, data_point in enumerate(data_loader_val):
-    #     video, label, _ = data_point
-    #     print(video.shape)
-    #     print(label)
 
-    import random
-    with torch.no_grad():
-        for batch in data_for_knn:
-            print(len(batch))
-            videos, labels, _ = batch
-            # Print the label and shape for each video in the batch
-            #for label, video in zip(labels, videos):
-             #   print('Label:', label, "shape:", video.shape)
-                #3 16 224 224
-            #make an empty mask of boolean values
-            empty_mask = torch.zeros((videos.shape[0], videos.shape[2]), dtype=torch.bool)
-            output_features = model(videos.cuda(), empty_mask.cuda())
-            print(output_features.shape)
-
-            #wandb.log({"random_num": random.random()})
-            # Assuming each batch contains a single video and its corresponding label
-            # print(batch)
+    # import random
+    # with torch.no_grad():
+    #     for batch in data_for_knn:
+    #         print(len(batch))
+    #         videos, labels, _ = batch
+    #         # Print the label and shape for each video in the batch
+    #         #for label, video in zip(labels, videos):
+    #          #   print('Label:', label, "shape:", video.shape)
+    #             #3 16 224 224
+    #         #make an empty mask of boolean values
+    #         empty_mask = torch.zeros((videos.shape[0], videos.shape[2]), dtype=torch.bool)
+    #         output_features = model(videos.cuda(), empty_mask.cuda())
+    #         print(output_features.shape)
+    #
+    #         #wandb.log({"random_num": random.random()})
+    #         # Assuming each batch contains a single video and its corresponding label
+    #         # print(batch)
 
     #     for i, (videos, labels) in enumerate(val_loader):
     #         videos = videos.cuda()
@@ -102,6 +98,8 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         std_tensor = torch.tensor(clip_std)
 
         with torch.cuda.amp.autocast():
+            print(bool_masked_pos.shape)
+            print(bool_masked_pos)
             output_features, output_video_features = model(videos, bool_masked_pos)
             with torch.no_grad():
                 image_teacher_model.eval()
