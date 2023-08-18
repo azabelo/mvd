@@ -68,10 +68,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         std_tensor = torch.tensor(clip_std)
 
         with torch.cuda.amp.autocast():
-            print(videos.shape)
-            print(bool_masked_pos.shape)
             output_features, output_video_features = model(videos, bool_masked_pos)
-            print(output_video_features.shape)
             with torch.no_grad():
                 image_teacher_model.eval()
                 if time_stride_loss:
@@ -97,9 +94,6 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
                     video_teacher_features = LN_vid(video_teacher_features)
 
             B, _, D = output_features.shape
-            # print(output_features.shape, teacher_features.shape)
-            # print(teacher_features[bool_masked_pos].shape)
-            # print(teacher_features[bool_masked_pos].reshape(B, -1, D).shape)
             loss_img_feat = loss_func_img_feat(
                 input=output_features,
                 target=teacher_features[bool_masked_pos].reshape(B, -1, D)
