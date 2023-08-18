@@ -58,8 +58,8 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
             empty_mask = torch.zeros((8, 1568), dtype=torch.bool)
             print(empty_mask.shape)
             print(videos.shape)
-            output_features = model(videos.cuda(), empty_mask.cuda())
-            print(output_features.shape)
+            output_features_for_knn, output_features_video_for_knn = model(videos.cuda(), empty_mask.cuda())
+            print(output_features_video_for_knn.shape)
 
             #wandb.log({"random_num": random.random()})
             # Assuming each batch contains a single video and its corresponding label
