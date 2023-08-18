@@ -138,7 +138,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
             max_lr = max(max_lr, group["lr"])
 
         wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value, " train_img_feat_loss": loss_value_img_feat,
-           "min_lr": min_lr, "max_lr": max_lr, "train_vid_feat_loss": loss_value_vid_feat})
+           "min_lr": min_lr, "max_lr": max_lr, "train_vid_feat_loss": loss_value_vid_feat, "grad_norm": grad_norm,})
 
         metric_logger.update(lr=max_lr)
         metric_logger.update(min_lr=min_lr)
@@ -171,12 +171,14 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
     knn_classifier3 = KNeighborsClassifier(n_neighbors=3)
     knn_classifier7 = KNeighborsClassifier(n_neighbors=7)
 
+    import random
     with torch.no_grad():
         for batch in data_for_knn:
             videos, labels = batch
             # Print the label and shape for each video in the batch
             for label, video in zip(labels, videos):
                 print('Label:', label, "shape:", video.shape)
+                wandb.log({"random_num": random.random()})
             # Assuming each batch contains a single video and its corresponding label
             # print(batch)
 
