@@ -173,7 +173,7 @@ def get_args():
     parser.add_argument('--dist_on_itp', action='store_true')
     parser.add_argument('--dist_url', default='env://', help='url used to set up distributed training')
 
-    parser.add_argument('--use_clip', action='store_true', default=False)
+    parser.add_argument('--use_clip', default=False, type=bool)
 
     return parser.parse_args()
 
