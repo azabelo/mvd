@@ -27,84 +27,6 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
                     wd_schedule_values=None, update_freq=None, time_stride_loss=True, lr_scale=1.0,
                     image_teacher_model=None, video_teacher_model=None, norm_feature=False,data_for_knn=None,):
 
-    # knn accuracy
-
-    knn_classifier3 = KNeighborsClassifier(n_neighbors=3, algorithm='brute', metric='cosine')
-    #knn_classifier5 = KNeighborsClassifier(n_neighbors=5)
-
-    # create a numpy array to store the 1568x768 video features for each video
-    # train_videos = np.empty((0, 1568*768))
-    # test_videos = np.empty((0, 1568*768))
-    # use only CLS
-    train_videos = np.empty((0, 768))
-    test_videos = np.empty((0, 768))
-    train_labels = np.empty(0)
-    test_labels = np.empty(0)
-
-    with torch.no_grad():
-        index = 0
-        for batch in data_for_knn:
-            print("knn step: ", index)
-            index += 1
-            if index > 1000:
-                break
-
-            videos, labels, _ = batch
-
-            # make an empty tensor of False values with shape [8, 1568]
-            # should be batch size, not 8 for flexibility
-            empty_mask = torch.zeros((videos.shape[0], 1568), dtype=torch.bool)
-            output_features_for_knn, output_features_video_for_knn = model(videos.cuda(), empty_mask.cuda())
-            #output_features_video_for_knn = output_features_video_for_knn.cpu().numpy()
-            cls_tok_knn = output_features_video_for_knn[:, 0, :]
-            if index > 100:
-                # test_videos = np.append(test_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
-                test_labels = np.append(test_labels, labels.cpu().numpy(), axis=0)
-                test_videos = np.append(test_videos, cls_tok_knn.cpu().numpy(), axis=0)
-            else:
-                # train_videos = np.append(train_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
-                train_labels = np.append(train_labels, labels.cpu().numpy(), axis=0)
-                train_videos = np.append(train_videos, cls_tok_knn.cpu().numpy(), axis=0)
-
-        # Standardize the feature values
-        scaler = StandardScaler()
-        train_scaled = scaler.fit_transform(train_videos)
-        test_scaled = scaler.transform(test_videos)
-
-        # # Apply PCA for dimensionality reduction
-        # n_components = 100  # Number of principal components to keep
-        # pca = PCA(n_components=n_components)
-        # train_pca = pca.fit_transform(train_scaled)
-        # test_pca = pca.transform(test_scaled)
-        #
-        # knn_classifier3.fit(train_pca, train_labels)
-        # predictions3 = knn_classifier3.predict(test_pca)
-        # knn_accuracy3 = accuracy_score(test_labels, predictions3)
-        # print("knn accuracy for 3 neighbors: ", knn_accuracy3)
-
-        # knn_classifier5.fit(train_pca, train_labels)
-        # predictions5 = knn_classifier5.predict(test_pca)
-        # knn_accuracy5 = accuracy_score(test_labels, predictions5)
-        # print("knn accuracy for 5 neighbors: ", knn_accuracy5)
-
-        # Apply t-SNE for dimensionality reduction
-        # n_components = 3  # Number of dimensions in the reduced space (can be adjusted)
-        # tsne = TSNE(n_components=n_components, random_state=42)
-        # train_scaled = tsne.fit_transform(train_scaled)
-        # test_scaled = tsne.fit_transform(test_scaled)
-
-        knn_classifier3.fit(train_scaled, train_labels)
-        predictions3 = knn_classifier3.predict(test_scaled)
-        knn_accuracy3 = accuracy_score(test_labels, predictions3)
-        print("knn accuracy for 3 neighbors: ", knn_accuracy3)
-
-        # knn_classifier5.fit(train_tsne, train_labels)
-        # predictions5 = knn_classifier5.predict(test_tsne)
-        # knn_accuracy5 = accuracy_score(test_labels, predictions5)
-        # print("knn accuracy for 5 neighbors: ", knn_accuracy5)
-
-        wandb.log({"knn_accuracy3": knn_accuracy3, })
-
     model.train()
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter('lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
@@ -247,6 +169,82 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger)
 
+    # knn accuracy
 
+    knn_classifier3 = KNeighborsClassifier(n_neighbors=3, algorithm='brute', metric='cosine')
+    # knn_classifier5 = KNeighborsClassifier(n_neighbors=5)
+
+    # create a numpy array to store the 1568x768 video features for each video
+    # train_videos = np.empty((0, 1568*768))
+    # test_videos = np.empty((0, 1568*768))
+    # use only CLS
+    train_videos = np.empty((0, 768))
+    test_videos = np.empty((0, 768))
+    train_labels = np.empty(0)
+    test_labels = np.empty(0)
+
+    with torch.no_grad():
+        index = 0
+        for batch in data_for_knn:
+            print("knn step: ", index)
+            index += 1
+            if index > 1000:
+                break
+
+            videos, labels, _ = batch
+
+            # make an empty tensor of False values with shape [8, 1568]
+            # should be batch size, not 8 for flexibility
+            empty_mask = torch.zeros((videos.shape[0], 1568), dtype=torch.bool)
+            output_features_for_knn, output_features_video_for_knn = model(videos.cuda(), empty_mask.cuda())
+            # output_features_video_for_knn = output_features_video_for_knn.cpu().numpy()
+            cls_tok_knn = output_features_video_for_knn[:, 0, :]
+            if index > 100:
+                # test_videos = np.append(test_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
+                test_labels = np.append(test_labels, labels.cpu().numpy(), axis=0)
+                test_videos = np.append(test_videos, cls_tok_knn.cpu().numpy(), axis=0)
+            else:
+                # train_videos = np.append(train_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
+                train_labels = np.append(train_labels, labels.cpu().numpy(), axis=0)
+                train_videos = np.append(train_videos, cls_tok_knn.cpu().numpy(), axis=0)
+
+        # Standardize the feature values
+        scaler = StandardScaler()
+        train_scaled = scaler.fit_transform(train_videos)
+        test_scaled = scaler.transform(test_videos)
+
+        # # Apply PCA for dimensionality reduction
+        # n_components = 100  # Number of principal components to keep
+        # pca = PCA(n_components=n_components)
+        # train_pca = pca.fit_transform(train_scaled)
+        # test_pca = pca.transform(test_scaled)
+        #
+        # knn_classifier3.fit(train_pca, train_labels)
+        # predictions3 = knn_classifier3.predict(test_pca)
+        # knn_accuracy3 = accuracy_score(test_labels, predictions3)
+        # print("knn accuracy for 3 neighbors: ", knn_accuracy3)
+
+        # knn_classifier5.fit(train_pca, train_labels)
+        # predictions5 = knn_classifier5.predict(test_pca)
+        # knn_accuracy5 = accuracy_score(test_labels, predictions5)
+        # print("knn accuracy for 5 neighbors: ", knn_accuracy5)
+
+        # Apply t-SNE for dimensionality reduction
+        # n_components = 3  # Number of dimensions in the reduced space (can be adjusted)
+        # tsne = TSNE(n_components=n_components, random_state=42)
+        # train_scaled = tsne.fit_transform(train_scaled)
+        # test_scaled = tsne.fit_transform(test_scaled)
+
+        knn_classifier3.fit(train_scaled, train_labels)
+        predictions3 = knn_classifier3.predict(test_scaled)
+        knn_accuracy3 = accuracy_score(test_labels, predictions3)
+        print("knn accuracy for 3 neighbors: ", knn_accuracy3)
+
+        # knn_classifier5.fit(train_tsne, train_labels)
+        # predictions5 = knn_classifier5.predict(test_tsne)
+        # knn_accuracy5 = accuracy_score(test_labels, predictions5)
+        # print("knn accuracy for 5 neighbors: ", knn_accuracy5)
+
+        wandb.log({"knn_accuracy3": knn_accuracy3, })
 
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
