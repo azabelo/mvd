@@ -29,7 +29,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
     # knn_classifier7 = KNeighborsClassifier(n_neighbors=7)
 
     # create a numpy array to store the 1568x768 video features for each video
-    all_videos = np.empty((0, 1568, 768))
+    all_videos = np.empty((0, 1568*768))
     all_labels = np.empty(0)
 
     with torch.no_grad():
