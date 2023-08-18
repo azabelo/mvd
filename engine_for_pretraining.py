@@ -16,6 +16,7 @@ from sklearn.metrics import accuracy_score
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
 
 Loss_func_choice = {'L1': torch.nn.L1Loss, 'L2': torch.nn.MSELoss, 'SmoothL1': torch.nn.SmoothL1Loss}
 
@@ -70,21 +71,39 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         train_scaled = scaler.fit_transform(train_videos)
         test_scaled = scaler.transform(test_videos)
 
-        # Apply PCA for dimensionality reduction
-        n_components = 100  # Number of principal components to keep
-        pca = PCA(n_components=n_components)
-        train_pca = pca.fit_transform(train_scaled)
-        test_pca = pca.transform(test_scaled)
+        # # Apply PCA for dimensionality reduction
+        # n_components = 100  # Number of principal components to keep
+        # pca = PCA(n_components=n_components)
+        # train_pca = pca.fit_transform(train_scaled)
+        # test_pca = pca.transform(test_scaled)
+        #
+        # knn_classifier3.fit(train_pca, train_labels)
+        # predictions3 = knn_classifier3.predict(test_pca)
+        # knn_accuracy3 = accuracy_score(test_labels, predictions3)
+        # print("knn accuracy for 3 neighbors: ", knn_accuracy3)
 
-        knn_classifier3.fit(train_pca, train_labels)
-        predictions3 = knn_classifier3.predict(test_pca)
+        # knn_classifier5.fit(train_pca, train_labels)
+        # predictions5 = knn_classifier5.predict(test_pca)
+        # knn_accuracy5 = accuracy_score(test_labels, predictions5)
+        # print("knn accuracy for 5 neighbors: ", knn_accuracy5)
+
+        # Apply t-SNE for dimensionality reduction
+        n_components = 10  # Number of dimensions in the reduced space (can be adjusted)
+        tsne = TSNE(n_components=n_components, random_state=42)
+        train_tsne = tsne.fit_transform(train_scaled)
+        test_tsne = tsne.transform(test_scaled)
+
+        knn_classifier3.fit(train_tsne, train_labels)
+        predictions3 = knn_classifier3.predict(test_tsne)
         knn_accuracy3 = accuracy_score(test_labels, predictions3)
         print("knn accuracy for 3 neighbors: ", knn_accuracy3)
 
-        knn_classifier5.fit(train_pca, train_labels)
-        predictions5 = knn_classifier5.predict(test_pca)
+        knn_classifier5.fit(train_tsne, train_labels)
+        predictions5 = knn_classifier5.predict(test_tsne)
         knn_accuracy5 = accuracy_score(test_labels, predictions5)
         print("knn accuracy for 5 neighbors: ", knn_accuracy5)
+
+
 
         wandb.log({"knn_accuracy3": knn_accuracy3, "knn_accuracy5": knn_accuracy5})
 
