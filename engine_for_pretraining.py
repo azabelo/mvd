@@ -47,6 +47,8 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
     import random
     with torch.no_grad():
         for batch in data_for_knn:
+            print(data_for_knn)
+            print(len(data_for_knn))
             videos, labels = batch
             # Print the label and shape for each video in the batch
             for label, video in zip(labels, videos):
