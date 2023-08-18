@@ -45,20 +45,20 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
     knn_classifier7 = KNeighborsClassifier(n_neighbors=7)
 
 
-    import random
-    with torch.no_grad():
-        for batch in data_for_knn:
-            print(len(batch))
-            videos, labels, _ = batch
-            # Print the label and shape for each video in the batch
-            #for label, video in zip(labels, videos):
-             #   print('Label:', label, "shape:", video.shape)
-                #3 16 224 224
-            #make an empty tensor of False values with shape [8, 1568]
-            empty_mask = torch.zeros((8, 12, 1568), dtype=torch.bool)
-            print(empty_mask)
-            output_features = model(videos.cuda(), empty_mask.cuda())
-            print(output_features.shape)
+    # import random
+    # with torch.no_grad():
+    #     for batch in data_for_knn:
+    #         print(len(batch))
+    #         videos, labels, _ = batch
+    #         # Print the label and shape for each video in the batch
+    #         #for label, video in zip(labels, videos):
+    #          #   print('Label:', label, "shape:", video.shape)
+    #             #3 16 224 224
+    #         #make an empty tensor of False values with shape [8, 1568]
+    #         empty_mask = torch.zeros((8, 12, 1568), dtype=torch.bool)
+    #         print(empty_mask)
+    #         output_features = model(videos.cuda(), empty_mask.cuda())
+    #         print(output_features.shape)
 
             #wandb.log({"random_num": random.random()})
             # Assuming each batch contains a single video and its corresponding label
@@ -99,7 +99,10 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         std_tensor = torch.tensor(clip_std)
 
         with torch.cuda.amp.autocast():
+            print(videos.shape)
+            print(bool_masked_pos.shape)
             output_features, output_video_features = model(videos, bool_masked_pos)
+            print(output_video_features.shape)
             with torch.no_grad():
                 image_teacher_model.eval()
                 if time_stride_loss:
