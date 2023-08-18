@@ -23,6 +23,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
                     log_writer=None, lr_scheduler=None, start_steps=None, lr_schedule_values=None,
                     wd_schedule_values=None, update_freq=None, time_stride_loss=True, lr_scale=1.0,
                     image_teacher_model=None, video_teacher_model=None, norm_feature=False,data_for_knn=None,):
+
     # knn accuracy
 
     knn_classifier3 = KNeighborsClassifier(n_neighbors=3)
@@ -43,6 +44,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
                 break
 
             videos, labels, _ = batch
+
             print(labels)
             # make an empty tensor of False values with shape [8, 1568]
             # should be batch size, not 8 for flexibility
