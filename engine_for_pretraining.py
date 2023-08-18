@@ -56,11 +56,11 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
             cls_tok_knn = output_features_video_for_knn[:, 0, :]
             if index > 40:
                 # test_videos = np.append(test_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
-                # test_labels = np.append(test_labels, labels.cpu().numpy(), axis=0)
+                test_labels = np.append(test_labels, labels.cpu().numpy(), axis=0)
                 test_videos = np.append(test_videos, cls_tok_knn.cpu().numpy(), axis=0)
             else:
                 # train_videos = np.append(train_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
-                # train_labels = np.append(train_labels, labels.cpu().numpy(), axis=0)
+                train_labels = np.append(train_labels, labels.cpu().numpy(), axis=0)
                 train_videos = np.append(train_videos, cls_tok_knn.cpu().numpy(), axis=0)
 
         knn_classifier3.fit(train_videos, train_labels)
