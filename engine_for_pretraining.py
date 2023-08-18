@@ -43,7 +43,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         for batch in data_for_knn:
             print("knn step: ", index)
             index += 1
-            if index > 80:
+            if index > 200:
                 break
 
             videos, labels, _ = batch
@@ -54,7 +54,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
             output_features_for_knn, output_features_video_for_knn = model(videos.cuda(), empty_mask.cuda())
             #output_features_video_for_knn = output_features_video_for_knn.cpu().numpy()
             cls_tok_knn = output_features_video_for_knn[:, 0, :]
-            if index > 40:
+            if index > 100:
                 # test_videos = np.append(test_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
                 test_labels = np.append(test_labels, labels.cpu().numpy(), axis=0)
                 test_videos = np.append(test_videos, cls_tok_knn.cpu().numpy(), axis=0)
