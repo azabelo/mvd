@@ -247,15 +247,10 @@ def log_knn_acc(data_for_knn, model):
     # test_labels = np.empty(0)
 
     # lightly knn instead of the one I made
-    train_videos = torch.empty((0, 768))
-    test_videos = torch.empty((0, 768))
-    train_labels = torch.empty(0)
-    test_labels = torch.empty(0)
-
-    train_videos = train_videos.cuda()
-    test_videos = test_videos.cuda()
-    train_labels = train_labels.cuda()
-    test_labels = test_labels.cuda()
+    train_videos = torch.empty((0, 768), device='cuda')
+    test_videos = torch.empty((0, 768), device='cuda')
+    train_labels = torch.empty(0, device='cuda')
+    test_labels = torch.empty(0, device='cuda')
 
     with torch.no_grad():
         index = 0
@@ -272,6 +267,7 @@ def log_knn_acc(data_for_knn, model):
             # output_features_video_for_knn = output_features_video_for_knn.cpu().numpy()
             cls_tok_knn = output_features_video_for_knn[:, 0, :]
             cls_tok_knn = F.normalize(cls_tok_knn, dim=1)
+            cls_tok_knn = cls_tok_knn.cuda()
             if index > 100:
                 test_labels = torch.cat((test_labels, labels), 0)
                 test_videos = torch.cat((test_videos, cls_tok_knn), 0)
