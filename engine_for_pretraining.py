@@ -257,7 +257,7 @@ def log_knn_acc(data_for_knn, model):
         for batch in data_for_knn:
             print("knn step: ", index)
             index += 1
-            if index > 1000:
+            if index > 10:
                 break
             videos, labels, _ = batch
             # make an empty tensor of False values with shape [8, 1568]
@@ -268,7 +268,7 @@ def log_knn_acc(data_for_knn, model):
             cls_tok_knn = output_features_video_for_knn[:, 0, :]
             cls_tok_knn = F.normalize(cls_tok_knn, dim=1)
             cls_tok_knn = cls_tok_knn.cuda()
-            if index > 100:
+            if index > 5:
                 # move to cuda if not already
                 test_labels = test_labels.cuda()
                 test_videos = test_videos.cuda()
@@ -295,7 +295,8 @@ def log_knn_acc(data_for_knn, model):
         # train_scaled = scaler.fit_transform(train_videos)
         # test_scaled = scaler.transform(test_videos)
 
-        train_videos = train_videos.transpose(1, 0)
+        #switch dimensions of the train_videos
+        train_videos = train_videos.transpose(0, 1)
         pred_labels = knn_predict(
             test_videos,
             train_videos,
