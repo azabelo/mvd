@@ -27,7 +27,7 @@ def knn_predict(
     feature_bank: Tensor,
     feature_labels: Tensor,
     num_classes: int,
-    knn_k: int = 200,
+    knn_k: int = 3,
     knn_t: float = 0.1,
 ) -> Tensor:
     """Run kNN predictions on features based on a feature bank
