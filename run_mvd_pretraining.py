@@ -251,7 +251,15 @@ def get_model(args):
 
 
 def main(args):
-    wandb.init(project='MVD+CLIP pretraining sweep with kNN')
+    run_name = f"bs: {args.batch_size}, update: {args.update_freq}, lr: {args.lr}, epochs: {args.epochs}, \
+warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
+    if args.use_clip:
+        run_name = "CLIP " + run_name
+    else:
+        run_name = "MAE " + run_name
+    print(run_name)
+
+    wandb.init(project='MVD+CLIP pretraining sweep with kNN', name=run_name)
     # Log the arguments to wandb
     wandb.config.update(args)
 

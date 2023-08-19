@@ -17,15 +17,79 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
+from torch import Tensor
+import torch.nn.functional as F
 
 Loss_func_choice = {'L1': torch.nn.L1Loss, 'L2': torch.nn.MSELoss, 'SmoothL1': torch.nn.SmoothL1Loss}
 
+def knn_predict(
+    feature: Tensor,
+    feature_bank: Tensor,
+    feature_labels: Tensor,
+    num_classes: int,
+    knn_k: int = 200,
+    knn_t: float = 0.1,
+) -> Tensor:
+    """Run kNN predictions on features based on a feature bank
+
+    This method is commonly used to monitor performance of self-supervised
+    learning methods.
+
+    The default parameters are the ones
+    used in https://arxiv.org/pdf/1805.01978v1.pdf.
+
+    Args:
+        feature:
+            Tensor with shape (B, D) for which you want predictions.
+        feature_bank:
+            Tensor of shape (D, N) of a database of features used for kNN.
+        feature_labels:
+            Labels with shape (N,) for the features in the feature_bank.
+        num_classes:
+            Number of classes (e.g. `10` for CIFAR-10).
+        knn_k:
+            Number of k neighbors used for kNN.
+        knn_t:
+            Temperature parameter to reweights similarities for kNN.
+
+    Returns:
+        A tensor containing the kNN predictions
+
+
+    """
+    # compute cos similarity between each feature vector and feature bank ---> (B, N)
+    sim_matrix = torch.mm(feature, feature_bank)
+    # (B, K)
+    sim_weight, sim_indices = sim_matrix.topk(k=knn_k, dim=-1)
+    # (B, K)
+    sim_labels = torch.gather(
+        feature_labels.expand(feature.size(0), -1), dim=-1, index=sim_indices
+    )
+    # we do a reweighting of the similarities
+    sim_weight = (sim_weight / knn_t).exp()
+    # counts for each class
+    one_hot_label = torch.zeros(
+        feature.size(0) * knn_k, num_classes, device=sim_labels.device
+    )
+    # (B*K, C)
+    one_hot_label = one_hot_label.scatter(
+        dim=-1, index=sim_labels.view(-1, 1), value=1.0
+    )
+    # weighted score ---> (B, C)
+    pred_scores = torch.sum(
+        one_hot_label.view(feature.size(0), -1, num_classes)
+        * sim_weight.unsqueeze(dim=-1),
+        dim=1,
+    )
+    pred_labels = pred_scores.argsort(dim=-1, descending=True)
+    return pred_labels
 
 def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimizer: torch.optim.Optimizer,
                     device: torch.device, epoch: int, loss_scaler, max_norm: float = 0,
                     log_writer=None, lr_scheduler=None, start_steps=None, lr_schedule_values=None,
                     wd_schedule_values=None, update_freq=None, time_stride_loss=True, lr_scale=1.0,
                     image_teacher_model=None, video_teacher_model=None, norm_feature=False,data_for_knn=None,):
+    log_knn_acc(data_for_knn, model)
 
     model.train()
     metric_logger = utils.MetricLogger(delimiter="  ")
@@ -169,19 +233,24 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger)
 
+
+
+    return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
+
+def log_knn_acc(data_for_knn, model):
     # knn accuracy
+    # knn_classifier3 = KNeighborsClassifier(n_neighbors=3, algorithm='brute', metric='cosine')
 
-    knn_classifier3 = KNeighborsClassifier(n_neighbors=3, algorithm='brute', metric='cosine')
-    # knn_classifier5 = KNeighborsClassifier(n_neighbors=5)
+    # train_videos = np.empty((0, 768))
+    # test_videos = np.empty((0, 768))
+    # train_labels = np.empty(0)
+    # test_labels = np.empty(0)
 
-    # create a numpy array to store the 1568x768 video features for each video
-    # train_videos = np.empty((0, 1568*768))
-    # test_videos = np.empty((0, 1568*768))
-    # use only CLS
-    train_videos = np.empty((0, 768))
-    test_videos = np.empty((0, 768))
-    train_labels = np.empty(0)
-    test_labels = np.empty(0)
+    # lightly knn instead of the one I made
+    train_videos = torch.empty((0, 768))
+    test_videos = torch.empty((0, 768))
+    train_labels = torch.empty(0)
+    test_labels = torch.empty(0)
 
     with torch.no_grad():
         index = 0
@@ -190,61 +259,44 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
             index += 1
             if index > 1000:
                 break
-
             videos, labels, _ = batch
-
             # make an empty tensor of False values with shape [8, 1568]
             # should be batch size, not 8 for flexibility
             empty_mask = torch.zeros((videos.shape[0], 1568), dtype=torch.bool)
             output_features_for_knn, output_features_video_for_knn = model(videos.cuda(), empty_mask.cuda())
             # output_features_video_for_knn = output_features_video_for_knn.cpu().numpy()
             cls_tok_knn = output_features_video_for_knn[:, 0, :]
+            cls_tok_knn = F.normalize(cls_tok_knn, dim=1)
             if index > 100:
+                test_labels = torch.cat((test_labels, labels), 0)
+                test_videos = torch.cat((test_videos, cls_tok_knn), 0)
                 # test_videos = np.append(test_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
-                test_labels = np.append(test_labels, labels.cpu().numpy(), axis=0)
-                test_videos = np.append(test_videos, cls_tok_knn.cpu().numpy(), axis=0)
+                # test_labels = np.append(test_labels, labels.cpu().numpy(), axis=0)
+                # test_videos = np.append(test_videos, cls_tok_knn.cpu().numpy(), axis=0)
             else:
+                train_labels = torch.cat((train_labels, labels), 0)
+                train_videos = torch.cat((train_videos, cls_tok_knn), 0)
                 # train_videos = np.append(train_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
-                train_labels = np.append(train_labels, labels.cpu().numpy(), axis=0)
-                train_videos = np.append(train_videos, cls_tok_knn.cpu().numpy(), axis=0)
+                # train_labels = np.append(train_labels, labels.cpu().numpy(), axis=0)
+                # train_videos = np.append(train_videos, cls_tok_knn.cpu().numpy(), axis=0)
 
         # Standardize the feature values
-        scaler = StandardScaler()
-        train_scaled = scaler.fit_transform(train_videos)
-        test_scaled = scaler.transform(test_videos)
+        # scaler = StandardScaler()
+        # train_scaled = scaler.fit_transform(train_videos)
+        # test_scaled = scaler.transform(test_videos)
 
-        # # Apply PCA for dimensionality reduction
-        # n_components = 100  # Number of principal components to keep
-        # pca = PCA(n_components=n_components)
-        # train_pca = pca.fit_transform(train_scaled)
-        # test_pca = pca.transform(test_scaled)
-        #
-        # knn_classifier3.fit(train_pca, train_labels)
-        # predictions3 = knn_classifier3.predict(test_pca)
+        pred_labels = knn_predict(
+            test_videos,
+            train_videos,
+            train_labels,
+            num_classes=51,
+        )
+        lightly_knn_accuracy = accuracy_score(test_labels, pred_labels)
+
+        # knn_classifier3.fit(train_scaled, train_labels)
+        # predictions3 = knn_classifier3.predict(test_scaled)
         # knn_accuracy3 = accuracy_score(test_labels, predictions3)
         # print("knn accuracy for 3 neighbors: ", knn_accuracy3)
-
-        # knn_classifier5.fit(train_pca, train_labels)
-        # predictions5 = knn_classifier5.predict(test_pca)
-        # knn_accuracy5 = accuracy_score(test_labels, predictions5)
-        # print("knn accuracy for 5 neighbors: ", knn_accuracy5)
-
-        # Apply t-SNE for dimensionality reduction
-        # n_components = 3  # Number of dimensions in the reduced space (can be adjusted)
-        # tsne = TSNE(n_components=n_components, random_state=42)
-        # train_scaled = tsne.fit_transform(train_scaled)
-        # test_scaled = tsne.fit_transform(test_scaled)
-
-        knn_classifier3.fit(train_scaled, train_labels)
-        predictions3 = knn_classifier3.predict(test_scaled)
-        knn_accuracy3 = accuracy_score(test_labels, predictions3)
-        print("knn accuracy for 3 neighbors: ", knn_accuracy3)
-
-        # knn_classifier5.fit(train_tsne, train_labels)
-        # predictions5 = knn_classifier5.predict(test_tsne)
-        # knn_accuracy5 = accuracy_score(test_labels, predictions5)
-        # print("knn accuracy for 5 neighbors: ", knn_accuracy5)
-
-        wandb.log({"knn_accuracy3": knn_accuracy3, })
-
-    return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
+        #
+        # wandb.log({"knn_accuracy3": knn_accuracy3, })
+        wandb.log({"knn_accuracy3": lightly_knn_accuracy, })
