@@ -83,7 +83,7 @@ def knn_predict(
         dim=1,
     )
     pred_labels = pred_scores.argsort(dim=-1, descending=True)
-    return pred_labels
+    return pred_labels[:, 0]
 
 def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimizer: torch.optim.Optimizer,
                     device: torch.device, epoch: int, loss_scaler, max_norm: float = 0,
