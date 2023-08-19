@@ -252,6 +252,11 @@ def log_knn_acc(data_for_knn, model):
     train_labels = torch.empty(0)
     test_labels = torch.empty(0)
 
+    train_videos = train_videos.cuda()
+    test_videos = test_videos.cuda()
+    train_labels = train_labels.cuda()
+    test_labels = test_labels.cuda()
+
     with torch.no_grad():
         index = 0
         for batch in data_for_knn:
