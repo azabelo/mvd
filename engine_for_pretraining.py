@@ -65,6 +65,7 @@ def knn_predict(
     sim_labels = torch.gather(
         feature_labels.expand(feature.size(0), -1), dim=-1, index=sim_indices
     )
+    sim_labels = sim_labels.long()
     # we do a reweighting of the similarities
     sim_weight = (sim_weight / knn_t).exp()
     # counts for each class
