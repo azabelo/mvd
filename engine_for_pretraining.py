@@ -295,6 +295,7 @@ def log_knn_acc(data_for_knn, model):
         # train_scaled = scaler.fit_transform(train_videos)
         # test_scaled = scaler.transform(test_videos)
 
+        train_videos = train_videos.transpose(1, 0)
         pred_labels = knn_predict(
             test_videos,
             train_videos,
