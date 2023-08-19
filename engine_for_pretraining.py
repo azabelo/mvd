@@ -306,6 +306,7 @@ def log_knn_acc(data_for_knn, model):
         )
         print(pred_labels.shape)
         print(test_labels.shape)
+        print(pred_labels[0])
         test_labels = test_labels.cpu().numpy()
         pred_labels = pred_labels.cpu().numpy()
         lightly_knn_accuracy = accuracy_score(test_labels, pred_labels)
