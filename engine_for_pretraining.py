@@ -304,6 +304,8 @@ def log_knn_acc(data_for_knn, model):
             train_labels,
             num_classes=51,
         )
+        test_labels = test_labels.cpu().numpy()
+        pred_labels = pred_labels.cpu().numpy()
         lightly_knn_accuracy = accuracy_score(test_labels, pred_labels)
 
         # knn_classifier3.fit(train_scaled, train_labels)
