@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Check if four arguments are provided
-if [ $# -ne 9 ]; then
+if [ $# -ne 7 ]; then
     echo "please provide rid:GPS rid:MASTER_PORT rid:MASTER_ADDR (localhost when using only 1 GPU) BATCH_SIZE INITIAL_LR UPDATE_FREQ EPOCHS WARMUP SAMPLING_RATE USE_CLIP"
     exit 1
 fi
