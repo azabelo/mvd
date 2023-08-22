@@ -46,4 +46,4 @@ OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         --lr ${LEARNING_RATE} --min_lr 1e-4 --drop_path 0.1 --warmup_epochs ${WARMUP} --epochs ${EPOCHS} \
         --auto_resume \
         --use_cls_token \
-        --use_clip ${USE_CLIP} --use_checkpoint --load_model ${CHECKPOINT}
+        --use_clip ${USE_CLIP} --use_checkpoint --load_model ${CHECKPOINT} --checkpoint_path ${CHECKPOINT}
