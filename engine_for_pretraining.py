@@ -295,7 +295,7 @@ def log_knn_acc(data_for_knn, model):
         test_scaled_np = scaler.transform(test_videos_np)
         knn_classifier3.fit(train_scaled_np, train_labels_np)
         predictions3 = knn_classifier3.predict(test_scaled_np)
-        knn_accuracy_custom = accuracy_score(test_labels, predictions3)
+        knn_accuracy_custom = accuracy_score(test_labels_np, predictions3)
         print("custom knn accuracy", knn_accuracy_custom)
 
         # lightly knn
