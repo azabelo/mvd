@@ -239,19 +239,19 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
 def log_knn_acc(data_for_knn, model):
-    # knn accuracy
-    # knn_classifier3 = KNeighborsClassifier(n_neighbors=3, algorithm='brute', metric='cosine')
 
-    # train_videos = np.empty((0, 768))
-    # test_videos = np.empty((0, 768))
-    # train_labels = np.empty(0)
-    # test_labels = np.empty(0)
-
-    # lightly knn instead of the one I made
+    # lightly knn
     train_videos = torch.empty((0, 768), device='cuda')
     test_videos = torch.empty((0, 768), device='cuda')
     train_labels = torch.empty(0, device='cuda')
     test_labels = torch.empty(0, device='cuda')
+
+    # my implementation of knn
+    knn_classifier3 = KNeighborsClassifier(n_neighbors=3, algorithm='brute', metric='cosine')
+    train_videos_np = np.empty((0, 768))
+    test_videos_np = np.empty((0, 768))
+    train_labels_np = np.empty(0)
+    test_labels_np = np.empty(0)
 
     with torch.no_grad():
         index = 0
@@ -259,8 +259,7 @@ def log_knn_acc(data_for_knn, model):
             print("knn step: ", index)
             index += 1
             videos, labels, _ = batch
-            # make an empty tensor of False values with shape [8, 1568]
-            # should be batch size, not 8 for flexibility
+            # make an empty tensor of False values with shape [bs, 1568]
             empty_mask = torch.zeros((videos.shape[0], 1568), dtype=torch.bool)
             output_features_for_knn, output_features_video_for_knn = model(videos.cuda(), empty_mask.cuda())
             # output_features_video_for_knn = output_features_video_for_knn.cpu().numpy()
@@ -275,9 +274,9 @@ def log_knn_acc(data_for_knn, model):
                 cls_tok_knn = cls_tok_knn.cuda()
                 test_labels = torch.cat((test_labels, labels), 0)
                 test_videos = torch.cat((test_videos, cls_tok_knn), 0)
-                # test_videos = np.append(test_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
-                # test_labels = np.append(test_labels, labels.cpu().numpy(), axis=0)
-                # test_videos = np.append(test_videos, cls_tok_knn.cpu().numpy(), axis=0)
+                # test_videos_np = np.append(test_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
+                test_labels_np = np.append(test_labels, labels.cpu().numpy(), axis=0)
+                test_videos_np = np.append(test_videos, cls_tok_knn.cpu().numpy(), axis=0)
             else:
                 train_labels = train_labels.cuda()
                 train_videos = train_videos.cuda()
@@ -285,15 +284,21 @@ def log_knn_acc(data_for_knn, model):
                 cls_tok_knn = cls_tok_knn.cuda()
                 train_labels = torch.cat((train_labels, labels), 0)
                 train_videos = torch.cat((train_videos, cls_tok_knn), 0)
-                # train_videos = np.append(train_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
-                # train_labels = np.append(train_labels, labels.cpu().numpy(), axis=0)
-                # train_videos = np.append(train_videos, cls_tok_knn.cpu().numpy(), axis=0)
+                # train_videos_np = np.append(train_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
+                train_labels_np = np.append(train_labels, labels.cpu().numpy(), axis=0)
+                train_videos_np = np.append(train_videos, cls_tok_knn.cpu().numpy(), axis=0)
 
+        # custom knn
         # Standardize the feature values
-        # scaler = StandardScaler()
-        # train_scaled = scaler.fit_transform(train_videos)
-        # test_scaled = scaler.transform(test_videos)
+        scaler = StandardScaler()
+        train_scaled_np = scaler.fit_transform(train_videos_np)
+        test_scaled_np = scaler.transform(test_videos_np)
+        knn_classifier3.fit(train_scaled_np, train_labels_np)
+        predictions3 = knn_classifier3.predict(test_scaled_np)
+        knn_accuracy_custom = accuracy_score(test_labels, predictions3)
+        print("custom knn accuracy", knn_accuracy_custom)
 
+        # lightly knn
         #switch dimensions of the train_videos
         train_videos = train_videos.transpose(0, 1)
         pred_labels = knn_predict(
@@ -309,10 +314,4 @@ def log_knn_acc(data_for_knn, model):
         pred_labels = pred_labels.cpu().numpy()
         lightly_knn_accuracy = accuracy_score(test_labels, pred_labels)
 
-        # knn_classifier3.fit(train_scaled, train_labels)
-        # predictions3 = knn_classifier3.predict(test_scaled)
-        # knn_accuracy3 = accuracy_score(test_labels, predictions3)
-        # print("knn accuracy for 3 neighbors: ", knn_accuracy3)
-        #
-        # wandb.log({"knn_accuracy3": knn_accuracy3, })
-        wandb.log({"knn_accuracy3": lightly_knn_accuracy, })
+        wandb.log({"knn_accuracy_lightly": lightly_knn_accuracy, "knn_accuracy_custom": knn_accuracy_custom})
