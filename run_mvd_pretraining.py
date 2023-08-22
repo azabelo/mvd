@@ -246,6 +246,7 @@ def get_model(args):
         feat_decoder_embed_dim=args.feat_decoder_embed_dim,
         feat_decoder_num_heads=args.feat_decoder_num_heads,
         use_checkpoint=args.use_checkpoint,
+        checkpoint_path=args.checkpoint_path,
         tubelet_size=args.tubelet_size,
     )
     return model
