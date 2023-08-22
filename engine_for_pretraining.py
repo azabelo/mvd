@@ -275,8 +275,8 @@ def log_knn_acc(data_for_knn, model):
                 test_labels = torch.cat((test_labels, labels), 0)
                 test_videos = torch.cat((test_videos, cls_tok_knn), 0)
                 # test_videos_np = np.append(test_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
-                test_labels_np = np.append(test_labels, labels.cpu().numpy(), axis=0)
-                test_videos_np = np.append(test_videos, cls_tok_knn.cpu().numpy(), axis=0)
+                test_labels_np = np.append(test_labels_np, labels.cpu().numpy(), axis=0)
+                test_videos_np = np.append(test_videos_np, cls_tok_knn.cpu().numpy(), axis=0)
             else:
                 train_labels = train_labels.cuda()
                 train_videos = train_videos.cuda()
@@ -285,8 +285,8 @@ def log_knn_acc(data_for_knn, model):
                 train_labels = torch.cat((train_labels, labels), 0)
                 train_videos = torch.cat((train_videos, cls_tok_knn), 0)
                 # train_videos_np = np.append(train_videos, output_features_video_for_knn.reshape(8, -1), axis=0)
-                train_labels_np = np.append(train_labels, labels.cpu().numpy(), axis=0)
-                train_videos_np = np.append(train_videos, cls_tok_knn.cpu().numpy(), axis=0)
+                train_labels_np = np.append(train_labels_np, labels.cpu().numpy(), axis=0)
+                train_videos_np = np.append(train_videos_np, cls_tok_knn.cpu().numpy(), axis=0)
 
         # custom knn
         # Standardize the feature values
