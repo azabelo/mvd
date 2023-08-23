@@ -34,7 +34,7 @@ OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=${GPUS} \
     --input_size 224 --short_side_size 224 \
     --opt adamw --opt_betas 0.9 0.999 --weight_decay 0.05 \
     --batch_size ${BATCH_SIZE} --update_freq ${UPDATE_FREQ} --num_sample ${NUM_SAMPLES} \
-    --save_ckpt_freq 20 --no_save_best_ckpt \
+    --save_ckpt_freq 10 \
     --num_frames 16 \
     --lr ${LEARNING_RATE} --epochs ${EPOCHS} \
     --dist_eval --test_num_segment 2 --test_num_crop 3 \
