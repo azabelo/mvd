@@ -202,6 +202,7 @@ def get_args():
                         help='url used to set up distributed training')
 
     parser.add_argument('--enable_deepspeed', action='store_true', default=False)
+    parser.add_argument('--use_clip', default=0, type=int)
 
     known_args, _ = parser.parse_known_args()
 
@@ -221,8 +222,13 @@ def get_args():
 
 
 def main(args, ds_init):
-
-    wandb.init(project='MVD+CLIP finetuning')
+    run_name = f"bs: {args.batch_size}, update: {args.update_freq}, lr: {args.lr}, epochs: {args.epochs}, \
+    warmup: {args.warmup_epochs}, sampling: {args.sampling_rate}, segments: {args.num_segments}, crops: {args.num_crops}"
+    if args.use_clip:
+        run_name = "CLIP " + run_name
+    else:
+        run_name = "MAE " + run_name
+    wandb.init(project='MVD finetuning', name=run_name)
     # Log the arguments to wandb
     wandb.config.update(args)
 
