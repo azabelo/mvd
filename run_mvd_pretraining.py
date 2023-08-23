@@ -476,6 +476,7 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
         if log_writer is not None:
             log_writer.set_step(epoch * num_training_steps_per_epoch * args.update_freq)
 
+        print(lr_schedule_values)
         train_stats = train_one_epoch(
             args, model, data_loader_train,
             optimizer, device, epoch, loss_scaler,
