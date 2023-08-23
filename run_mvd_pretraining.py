@@ -268,7 +268,6 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
     utils.init_distributed_mode(args)
 
     print(args)
-    exit(0)
 
     device = torch.device(args.device)
 
