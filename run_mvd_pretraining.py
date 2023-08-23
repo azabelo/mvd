@@ -470,7 +470,7 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
     torch.cuda.empty_cache()
     print(f"Start training for {args.epochs} epochs")
     start_time = time.time()
-    print(args.start_epoch
+    print(args.start_epoch)
     for epoch in range(args.start_epoch, args.epochs):
         if args.distributed:
             data_loader_train.sampler.set_epoch(epoch)
