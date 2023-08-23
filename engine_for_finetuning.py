@@ -15,8 +15,6 @@ import wandb
 
 def train_class_batch(model, samples, target, criterion):
     outputs = model(samples)
-    print("jere")
-    print(outputs.shape)
     # print(outputs.shape)
     # print(target.shape)
     # print(target)
@@ -124,7 +122,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
         for group in optimizer.param_groups:
             min_lr = min(min_lr, group["lr"])
             max_lr = max(max_lr, group["lr"])
-        wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value, "train_acc": class_acc,"max_lr": max_lr, "min_lr": min_lr})
+        wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value, "train_acc": class_acc,"max_lr": max_lr, "min_lr": min_lr, "grad_norm": grad_norm})
 
 
         metric_logger.update(lr=max_lr)
