@@ -87,7 +87,7 @@ def get_args():
                         help='Drop path rate (default: 0.1)')
 
     parser.add_argument('--use_checkpoint', action='store_true', default=False)
-    parser.add_argument('--checkpoint_path', default='', type=str)
+    parser.add_argument('--checkpoint_path', default=None, type=str)
 
     # Optimizer parameters
     parser.add_argument('--opt', default='adamw', type=str, metavar='OPTIMIZER',
@@ -268,6 +268,7 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
     utils.init_distributed_mode(args)
 
     print(args)
+    exit(0)
 
     device = torch.device(args.device)
 
