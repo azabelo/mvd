@@ -223,7 +223,7 @@ def get_args():
 
 def main(args, ds_init):
     run_name = f"bs: {args.batch_size}, update: {args.update_freq}, lr: {args.lr}, epochs: {args.epochs}, \
-    warmup: {args.warmup_epochs}, sampling: {args.sampling_rate}, segments: {args.test_num_segments}, crops: {args.test_num_crops}"
+    warmup: {args.warmup_epochs}, sampling: {args.sampling_rate}, segments: {args.test_num_segment}, crops: {args.test_num_crop}"
     if args.use_clip:
         run_name = "CLIP " + run_name
     else:
