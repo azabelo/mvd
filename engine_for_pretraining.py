@@ -170,7 +170,8 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
     metric_logger.synchronize_between_processes()
     print("Averaged stats:", metric_logger)
 
-    log_knn_acc(data_for_knn, model)
+    if data_for_knn is not None:
+        log_knn_acc(data_for_knn, model)
 
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 

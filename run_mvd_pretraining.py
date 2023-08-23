@@ -488,7 +488,7 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
             image_teacher_model=image_teacher_model,
             video_teacher_model=video_teacher_model,
             norm_feature=args.norm_feature,
-            data_for_knn=data_loader_val,
+            # data_for_knn=data_loader_val,
         )
 
         if args.output_dir:
