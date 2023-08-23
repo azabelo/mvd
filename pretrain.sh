@@ -2,22 +2,22 @@
 
 # Check if four arguments are provided
 if [ $# -ne 8 ]; then
-    echo "please provide GPS rid:MASTER_PORT rid:MASTER_ADDR (localhost when using only 1 GPU) BATCH_SIZE INITIAL_LR UPDATE_FREQ EPOCHS WARMUP SAMPLING_RATE USE_CLIP"
+    echo "please provide GPS MASTER_PORT rid:MASTER_ADDR (localhost when using only 1 GPU) BATCH_SIZE INITIAL_LR UPDATE_FREQ EPOCHS WARMUP SAMPLING_RATE USE_CLIP"
     exit 1
 fi
 #NODE_COUNT RANK
 GPUS="$1"
 #NODE_COUNT="$2"
 #RANK="$3"
-MASTER_PORT=1
+MASTER_PORT="$2"
 #MASTER_ADDR="$3"
-BATCH_SIZE="$2"
-LEARNING_RATE="$3"
-UPDATE_FREQ="$4"
-EPOCHS="$5"
-WARMUP="$6"
-SAMPLING_RATE="$7"
-USE_CLIP="$8"
+BATCH_SIZE="$3"
+LEARNING_RATE="$4"
+UPDATE_FREQ="$5"
+EPOCHS="$6"
+WARMUP="$7"
+SAMPLING_RATE="$8"
+USE_CLIP="$9"
 OUTPUT_DIR='OUTPUT/mvd_vit_base_with_vit_base_teacher_HMDB51'
 DATA_PATH='train.csv'
 DATA_ROOT='hmdb51_mp4'
