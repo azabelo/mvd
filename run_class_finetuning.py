@@ -426,6 +426,7 @@ def main(args, ds_init):
             print(layer.weight)
         else:
             print(f"Layer {layer_name} not found in the model.")
+    print(model.state_dict()["blocks.11.mlp.fc2.weight"])
     print(model.state_dict().keys())
     exit(0)
 
