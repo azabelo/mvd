@@ -418,6 +418,15 @@ def main(args, ds_init):
 
     print(model)
     print(type(model))
+
+    def print_layer_weights(model, layer_name):
+        layer = getattr(model, layer_name, None)
+        if layer is not None:
+            print(f"Weights of {layer_name}:")
+            print(layer.weight)
+        else:
+            print(f"Layer {layer_name} not found in the model.")
+    print_layer_weights(model, "blocks.11.mlp.fc2.weight")
     exit(0)
 
     model_ema = None
