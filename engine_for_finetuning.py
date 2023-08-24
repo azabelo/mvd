@@ -91,7 +91,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
             model.step()
 
             if (data_iter_step + 1) % update_freq == 0:
-                # this needs to be uncommented when not using deepspeed and vice versa!!!
+                # this needs to be uncommented when not using deepspeed and vice versa!!!?
                 #model.zero_grad()
                 # Deepspeed will call step() & model.zero_grad() automatic
                 if model_ema is not None:
@@ -138,7 +138,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
         metric_logger.update(weight_decay=weight_decay_value)
         metric_logger.update(grad_norm=grad_norm)
         # print(loss_value)
-        # print(class_acc)
+        print("class_acc: ", class_acc)
         # print(loss_scale_value)
         # print(max_lr)
         # print(min_lr)
