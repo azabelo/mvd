@@ -91,7 +91,8 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
             model.step()
 
             if (data_iter_step + 1) % update_freq == 0:
-                # model.zero_grad()
+                # this needs to be uncommented when not using deepspeed and vice versa!!!
+                model.zero_grad()
                 # Deepspeed will call step() & model.zero_grad() automatic
                 if model_ema is not None:
                     model_ema.update(model)
