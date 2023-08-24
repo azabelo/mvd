@@ -126,7 +126,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
         for group in optimizer.param_groups:
             min_lr = min(min_lr, group["lr"])
             max_lr = max(max_lr, group["lr"])
-        wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value, "train_acc": class_acc,"max_lr": max_lr, "min_lr": min_lr, "grad_norm": grad_norm})
+        wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value, "max_lr": max_lr, "min_lr": min_lr, "grad_norm": grad_norm})
 
 
         metric_logger.update(lr=max_lr)
@@ -182,6 +182,7 @@ def validation_one_epoch(data_loader, model, device):
             loss = criterion(output, target)
 
         acc1, acc5 = accuracy(output, target, topk=(1, 5))
+        wandb.log({"val_acc1": acc1.item(), "val_acc5": acc5.item(), "val_loss": loss.item()})
 
         batch_size = videos.shape[0]
         metric_logger.update(loss=loss.item())
