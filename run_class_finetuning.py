@@ -416,24 +416,24 @@ def main(args, ds_init):
 
     model.to(device)
 
-    # print(model)
-    # print(type(model))
+    # # print(model)
+    # # print(type(model))
+    #
+    # def print_layer_weights(model, layer_name):
+    #     layer = getattr(model, layer_name, None)
+    #     if layer is not None:
+    #         print(f"Weights of {layer_name}:")
+    #         print(layer.weight)
+    #     else:
+    #         print(f"Layer {layer_name} not found in the model.")
+    # # print(model.state_dict()["blocks.11.mlp.fc2.weight"])
+    # # print(model.state_dict().keys())
+    # for key in model.state_dict().keys():
+    #     temp_tensor = model.state_dict()[key]
+    #     while isinstance(temp_tensor, torch.Tensor) and temp_tensor.dim() > 0:
+    #         temp_tensor =  temp_tensor[0]
+    #     print(key, model.state_dict()[key].shape, temp_tensor)
 
-    def print_layer_weights(model, layer_name):
-        layer = getattr(model, layer_name, None)
-        if layer is not None:
-            print(f"Weights of {layer_name}:")
-            print(layer.weight)
-        else:
-            print(f"Layer {layer_name} not found in the model.")
-    # print(model.state_dict()["blocks.11.mlp.fc2.weight"])
-    # print(model.state_dict().keys())
-    for key in model.state_dict().keys():
-        temp_tensor = model.state_dict()[key]
-        while isinstance(temp_tensor, torch.Tensor) and temp_tensor.dim() > 0:
-            temp_tensor =  temp_tensor[0]
-        print(key, model.state_dict()[key].shape, temp_tensor)
-    exit(0)
 
     model_ema = None
     if args.model_ema:
@@ -546,6 +546,7 @@ def main(args, ds_init):
     start_time = time.time()
     max_accuracy = 0.0
 
+    print("start epoch: ", args.start_epoch)
     for epoch in range(args.start_epoch, args.epochs):
         if args.distributed:
             data_loader_train.sampler.set_epoch(epoch)
