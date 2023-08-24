@@ -176,7 +176,7 @@ def validation_one_epoch(data_loader, model, device):
             loss = criterion(output, target)
 
         acc1, acc5 = accuracy(output, target, topk=(1, 5))
-        wandb.log({"val_acc1": acc1.item(), "val_acc5": acc5.item(), "val_loss": loss.item()})
+
         print("val_acc1: ", acc1.item(), "val_acc5: ", acc5.item(), "val_loss: ", loss.item())
 
         batch_size = videos.shape[0]
@@ -185,6 +185,7 @@ def validation_one_epoch(data_loader, model, device):
         metric_logger.meters['acc5'].update(acc5.item(), n=batch_size)
     # gather the stats from all processes
     metric_logger.synchronize_between_processes()
+    wandb.log({"val_acc (top 1)": metric_logger.acc1.global_avg, "val_acc (top 5)": metric_logger.acc5.global_avg, "val_loss": metric_logger.loss.global_avg})
     print('* Acc@1 {top1.global_avg:.3f} Acc@5 {top5.global_avg:.3f} loss {losses.global_avg:.3f}'
           .format(top1=metric_logger.acc1, top5=metric_logger.acc5, losses=metric_logger.loss))
 
