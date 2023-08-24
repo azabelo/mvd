@@ -24,7 +24,7 @@ OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=${GPUS} \
     --master_port ${MASTER_PORT} --nnodes=1 \
     --node_rank=0 --master_addr=localhost \
     run_class_finetuning.py \
-    --model pretrain_masked_video_student_base_patch16_224 \
+    --model vit_base_patch16_224 \
     --data_set Kinetics-400 --nb_classes 51 \
     --data_path ${DATA_PATH} \
     --data_root ${DATA_ROOT} \
