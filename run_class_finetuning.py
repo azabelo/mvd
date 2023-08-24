@@ -416,8 +416,8 @@ def main(args, ds_init):
 
     model.to(device)
 
-    print(model)
-    print(type(model))
+    # print(model)
+    # print(type(model))
 
     def print_layer_weights(model, layer_name):
         layer = getattr(model, layer_name, None)
@@ -426,8 +426,10 @@ def main(args, ds_init):
             print(layer.weight)
         else:
             print(f"Layer {layer_name} not found in the model.")
-    print(model.state_dict()["blocks.11.mlp.fc2.weight"])
-    print(model.state_dict().keys())
+    # print(model.state_dict()["blocks.11.mlp.fc2.weight"])
+    # print(model.state_dict().keys())
+    for key in model.state_dict().keys():
+        print(key, model.state_dict()[key].shape)
     exit(0)
 
     model_ema = None
