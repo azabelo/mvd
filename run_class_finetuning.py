@@ -416,6 +416,9 @@ def main(args, ds_init):
 
     model.to(device)
 
+    print(model.keys())
+    exit(0)
+
     model_ema = None
     if args.model_ema:
         model_ema = ModelEma(
