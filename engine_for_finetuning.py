@@ -137,13 +137,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                 weight_decay_value = group["weight_decay"]
         metric_logger.update(weight_decay=weight_decay_value)
         metric_logger.update(grad_norm=grad_norm)
-        # print(loss_value)
-        print("class_acc: ", class_acc)
-        # print(loss_scale_value)
-        # print(max_lr)
-        # print(min_lr)
-        # print(weight_decay_value)
-        # print(grad_norm)
+
         if log_writer is not None:
             log_writer.update(loss=loss_value, head="loss")
             log_writer.update(class_acc=class_acc, head="loss")
@@ -183,6 +177,7 @@ def validation_one_epoch(data_loader, model, device):
 
         acc1, acc5 = accuracy(output, target, topk=(1, 5))
         wandb.log({"val_acc1": acc1.item(), "val_acc5": acc5.item(), "val_loss": loss.item()})
+        print("val_acc1: ", acc1.item(), "val_acc5: ", acc5.item(), "val_loss: ", loss.item())
 
         batch_size = videos.shape[0]
         metric_logger.update(loss=loss.item())
