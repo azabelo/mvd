@@ -28,7 +28,7 @@ OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         run_mvd_pretraining.py \
         --data_path ${DATA_PATH} \
         --data_root ${DATA_ROOT} \
-        --model pretrain_masked_video_student_base_patch16_224 \
+        --model vit_base_patch16_224 \
         --log_dir ${OUTPUT_DIR} \
         --output_dir ${OUTPUT_DIR} \
         --image_teacher_model vit_base_patch16_224 \
