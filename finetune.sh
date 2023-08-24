@@ -37,6 +37,7 @@ OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=${GPUS} \
     --save_ckpt_freq 40 \
     --num_frames 16 \
     --lr ${LEARNING_RATE} --epochs ${EPOCHS} \
-    --dist_eval --test_num_segment 2 --test_num_crop 3 --use_checkpoint \
+    --dist_eval --test_num_segment 2 --test_num_crop 3 --use_cls_token\
+    --use_checkpoint \
     --enable_deepspeed \
     --use_clip ${USE_CLIP}
