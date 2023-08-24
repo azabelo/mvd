@@ -61,6 +61,9 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                     param_group["weight_decay"] = wd_schedule_values[it]
 
         samples = samples.to(device, non_blocking=True)
+        print(targets[0])
+        print(len(targets))
+        print(type(targets[0]))
         print(targets)
         targets = targets.to(device, non_blocking=True)
 
