@@ -417,6 +417,7 @@ def main(args, ds_init):
     model.to(device)
 
     print(model)
+    print(type(model))
     exit(0)
 
     model_ema = None
