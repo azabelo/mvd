@@ -555,17 +555,17 @@ def main(args, ds_init):
         if log_writer is not None:
             log_writer.set_step(epoch * num_training_steps_per_epoch * args.update_freq)
 
-        if data_loader_val is not None:
-            test_stats = validation_one_epoch(data_loader_val, model, device)
-            print(f"Accuracy of the network on the {len(dataset_val)} val videos: {test_stats['acc1']:.1f}%")
-            if max_accuracy < test_stats["acc1"]:
-                max_accuracy = test_stats["acc1"]
-                if args.output_dir and args.save_ckpt and not args.no_save_best_ckpt:
-                    utils.save_model(
-                        args=args, model=model, model_without_ddp=model_without_ddp, optimizer=optimizer,
-                        loss_scaler=loss_scaler, epoch="best", model_ema=model_ema)
-
-            print(f'Max accuracy: {max_accuracy:.2f}%')
+        # if data_loader_val is not None:
+        #     test_stats = validation_one_epoch(data_loader_val, model, device)
+        #     print(f"Accuracy of the network on the {len(dataset_val)} val videos: {test_stats['acc1']:.1f}%")
+        #     if max_accuracy < test_stats["acc1"]:
+        #         max_accuracy = test_stats["acc1"]
+        #         if args.output_dir and args.save_ckpt and not args.no_save_best_ckpt:
+        #             utils.save_model(
+        #                 args=args, model=model, model_without_ddp=model_without_ddp, optimizer=optimizer,
+        #                 loss_scaler=loss_scaler, epoch="best", model_ema=model_ema)
+        #
+        #     print(f'Max accuracy: {max_accuracy:.2f}%')
 
         train_stats = train_one_epoch(
             model, criterion, data_loader_train, optimizer,
