@@ -587,7 +587,7 @@ def main(args, ds_init):
             #              **{f'val_{k}': v for k, v in test_stats.items()},
             #              'epoch': epoch,
             #              'n_parameters': n_parameters}
-        else:
+        # else:
             # log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
             #              'epoch': epoch,
             #              'n_parameters': n_parameters}
