@@ -2,7 +2,7 @@
 
 # Check if four arguments are provided
 if [ $# -ne 9 ]; then
-    echo "please provide GPS MASTER_PORT rid:MASTER_ADDR (localhost when using only 1 GPU) BATCH_SIZE LR MODEL_PATH EPOCHS UPDATE_FREQ NUM_SAMPLES CLIP_USED"
+    echo "please provide GPS MASTER_PORT rid:MASTER_ADDR (localhost when using only 1 GPU) BATCH_SIZE LR MODEL_PATH EPOCHS UPDATE_FREQ NUM_SAMPLES CLIP_USED WARMUP"
     exit 1
 fi
 
@@ -19,6 +19,7 @@ EPOCHS="$6"
 UPDATE_FREQ="$7"
 NUM_SAMPLES="$8"
 USE_CLIP="$9"
+WARMUP="${10}"
 
 OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=${GPUS} \
     --master_port ${MASTER_PORT} --nnodes=1 \
@@ -39,5 +40,5 @@ OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=${GPUS} \
     --lr ${LEARNING_RATE} --epochs ${EPOCHS} \
     --dist_eval --test_num_segment 2 --test_num_crop 3 --use_cls_token\
     --use_checkpoint \
-    --enable_deepspeed \
+    --enable_deepspeed --warmup_epochs ${WARMUP} \
     --use_clip ${USE_CLIP}
