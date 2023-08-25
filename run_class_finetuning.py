@@ -555,18 +555,18 @@ def main(args, ds_init):
         if log_writer is not None:
             log_writer.set_step(epoch * num_training_steps_per_epoch * args.update_freq)
 
-        # train_stats = train_one_epoch(
-        #     model, criterion, data_loader_train, optimizer,
-        #     device, epoch, loss_scaler, args.clip_grad, model_ema, mixup_fn,
-        #     log_writer=log_writer, start_steps=epoch * num_training_steps_per_epoch,
-        #     lr_schedule_values=lr_schedule_values, wd_schedule_values=wd_schedule_values,
-        #     num_training_steps_per_epoch=num_training_steps_per_epoch, update_freq=args.update_freq,
-        # )
-        # if args.output_dir and args.save_ckpt:
-        #     if (epoch + 1) % args.save_ckpt_freq == 0 or epoch + 1 == args.epochs:
-        #         utils.save_model(
-        #             args=args, model=model, model_without_ddp=model_without_ddp, optimizer=optimizer,
-        #             loss_scaler=loss_scaler, epoch=epoch, model_ema=model_ema)
+        train_stats = train_one_epoch(
+            model, criterion, data_loader_train, optimizer,
+            device, epoch, loss_scaler, args.clip_grad, model_ema, mixup_fn,
+            log_writer=log_writer, start_steps=epoch * num_training_steps_per_epoch,
+            lr_schedule_values=lr_schedule_values, wd_schedule_values=wd_schedule_values,
+            num_training_steps_per_epoch=num_training_steps_per_epoch, update_freq=args.update_freq,
+        )
+        if args.output_dir and args.save_ckpt:
+            if (epoch + 1) % args.save_ckpt_freq == 0 or epoch + 1 == args.epochs:
+                utils.save_model(
+                    args=args, model=model, model_without_ddp=model_without_ddp, optimizer=optimizer,
+                    loss_scaler=loss_scaler, epoch=epoch, model_ema=model_ema)
         if data_loader_val is not None:
             test_stats = validation_one_epoch(data_loader_val, model, device)
             print(f"Accuracy of the network on the {len(dataset_val)} val videos: {test_stats['acc1']:.1f}%")
@@ -583,19 +583,19 @@ def main(args, ds_init):
                 log_writer.update(val_acc5=test_stats['acc5'], head="perf", step=epoch)
                 log_writer.update(val_loss=test_stats['loss'], head="perf", step=epoch)
 
-            # log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
-            #              **{f'val_{k}': v for k, v in test_stats.items()},
-            #              'epoch': epoch,
-            #              'n_parameters': n_parameters}
-        # else:
-            # log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
-            #              'epoch': epoch,
-            #              'n_parameters': n_parameters}
-        # if args.output_dir and utils.is_main_process():
-        #     if log_writer is not None:
-        #         log_writer.flush()
-        #     with open(os.path.join(args.output_dir, "log.txt"), mode="a", encoding="utf-8") as f:
-        #         f.write(json.dumps(log_stats) + "\n")
+            log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
+                         **{f'val_{k}': v for k, v in test_stats.items()},
+                         'epoch': epoch,
+                         'n_parameters': n_parameters}
+        else:
+            log_stats = {**{f'train_{k}': v for k, v in train_stats.items()},
+                         'epoch': epoch,
+                         'n_parameters': n_parameters}
+        if args.output_dir and utils.is_main_process():
+            if log_writer is not None:
+                log_writer.flush()
+            with open(os.path.join(args.output_dir, "log.txt"), mode="a", encoding="utf-8") as f:
+                f.write(json.dumps(log_stats) + "\n")
 
     preds_file = os.path.join(args.output_dir, str(global_rank) + '.txt')
     test_stats = final_test(data_loader_test, model, device, preds_file)
