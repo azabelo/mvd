@@ -482,7 +482,7 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
 
         # only do the knn acc for every 10th epoch ( make this a cmd line arg )
         data_for_knn_arg = None
-        if epoch % 10 == 0:
+        if epoch % 10 == 1:
             data_loader_val = data_loader_val
 
         train_stats = train_one_epoch(
