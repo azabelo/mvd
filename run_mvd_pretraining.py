@@ -479,6 +479,12 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
 
         print(lr_schedule_values)
         print(len(lr_schedule_values))
+
+        # only do the knn acc for every 10th epoch ( make this a cmd line arg )
+        data_for_knn_arg = None
+        if epoch % 10 == 0:
+            data_loader_val = data_loader_val
+
         train_stats = train_one_epoch(
             args, model, data_loader_train,
             optimizer, device, epoch, loss_scaler,
@@ -491,7 +497,7 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
             image_teacher_model=image_teacher_model,
             video_teacher_model=video_teacher_model,
             norm_feature=args.norm_feature,
-            data_for_knn=data_loader_val,
+            data_for_knn=data_for_knn_arg,
         )
 
         if args.output_dir:
