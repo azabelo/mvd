@@ -204,6 +204,8 @@ def get_args():
     parser.add_argument('--enable_deepspeed', action='store_true', default=False)
     parser.add_argument('--use_clip', default=0, type=int)
 
+    parser.add_argument('--additional_name', default='', type=str)
+
     known_args, _ = parser.parse_known_args()
 
     if known_args.enable_deepspeed:
@@ -224,7 +226,8 @@ def get_args():
 def main(args, ds_init):
     print(args.start_epoch)
     run_name = f"bs: {args.batch_size}, update: {args.update_freq}, lr: {args.lr}, epochs: {args.epochs}, \
-    warmup: {args.warmup_epochs}, sampling: {args.sampling_rate}, segments: {args.test_num_segment}, crops: {args.test_num_crop}"
+    warmup: {args.warmup_epochs}, sampling: {args.sampling_rate}, segments: {args.test_num_segment}, \
+    crops: {args.test_num_crop} {args.additional_name}"
     if args.use_clip:
         run_name = "CLIP " + run_name
     else:
