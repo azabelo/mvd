@@ -19,7 +19,7 @@ WARMUP="$7"
 SAMPLING_RATE="$8"
 USE_CLIP="$9"
 OUTPUT_DIR='OUTPUT/mvd_vit_base_with_vit_base_teacher_HMDB51'
-DATA_PATH='empty.csv'
+DATA_PATH='train.csv'
 DATA_ROOT='hmdb51_mp4'
 
 OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
