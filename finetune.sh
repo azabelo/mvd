@@ -42,5 +42,5 @@ OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=${GPUS} \
     --use_checkpoint \
     --enable_deepspeed --warmup_epochs ${WARMUP} \
     --use_clip ${USE_CLIP} \
-    --layer_decay 0.7 --drop_path 0.2 --no_auto_resume
+    --layer_decay 0.7 --drop_path 0.2
 
