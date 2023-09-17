@@ -256,7 +256,7 @@ def main(args, ds_init):
     # dont forget to change the pretrained True as needed
     model = create_model(
         args.model,
-        pretrained=True,
+        pretrained=False,
         img_size=args.input_size,
         num_classes=args.nb_classes,
         all_frames=args.num_frames * args.num_segments,
