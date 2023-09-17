@@ -20,7 +20,7 @@ UPDATE_FREQ="$7"
 NUM_SAMPLES="$8"
 USE_CLIP="$9"
 WARMUP="${10}"
-
+#     --finetune ${MODEL_PATH} \     --use_checkpoint \
 OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=${GPUS} \
     --master_port ${MASTER_PORT} --nnodes=1 \
     --node_rank=0 --master_addr=localhost \
@@ -29,7 +29,6 @@ OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=${GPUS} \
     --data_set Kinetics-400 --nb_classes 51 \
     --data_path ${DATA_PATH} \
     --data_root ${DATA_ROOT} \
-    --finetune ${MODEL_PATH} \
     --log_dir ${OUTPUT_DIR} \
     --output_dir ${OUTPUT_DIR} \
     --input_size 224 --short_side_size 224 \
@@ -39,8 +38,7 @@ OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=${GPUS} \
     --num_frames 16 \
     --lr ${LEARNING_RATE} --epochs ${EPOCHS} \
     --dist_eval --test_num_segment 10 --test_num_crop 3 \
-    --use_checkpoint \
     --enable_deepspeed --warmup_epochs ${WARMUP} \
     --use_clip ${USE_CLIP} \
-    --layer_decay 0.7 --drop_path 0.2
+    --layer_decay 0.7 --drop_path 0.2 --no_auto_resume
 
