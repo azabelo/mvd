@@ -235,7 +235,7 @@ def get_model(args):
     print(f"Creating model: {args.model}")
     model = create_model(
         args.model,
-        pretrained=False,
+        pretrained=True,
         drop_path_rate=args.drop_path,
         drop_block_rate=None,
         decoder_depth=args.decoder_depth,
