@@ -480,10 +480,10 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
         print(lr_schedule_values)
         print(len(lr_schedule_values))
 
-        # only do the knn acc for every 10th epoch ( make this a cmd line arg )
+        # only do the knn acc for every 100th epoch ( make this a cmd line arg )
 
         data_for_knn_arg = None
-        if epoch % 10 == 1:
+        if epoch % 100 == 1:
             data_for_knn_arg = data_loader_val
 
         train_stats = train_one_epoch(
