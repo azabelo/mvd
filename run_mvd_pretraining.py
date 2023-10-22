@@ -484,7 +484,7 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
 
         data_for_knn_arg = None
 
-        if epoch % 100 == 1:
+        if epoch % 10 == 1:
             data_for_knn_arg = data_loader_val
 
         train_stats = train_one_epoch(
