@@ -170,11 +170,13 @@ def validation_one_epoch(data_loader, model, device):
         videos = videos.to(device, non_blocking=True)
         target = target.to(device, non_blocking=True)
 
+        shape = 0
         # compute output
         with torch.cuda.amp.autocast():
             output = model(videos)
-            print(output.shape)
+            shape = output.shape
             loss = criterion(output, target)
+        print(shape)
 
         acc1, acc5 = accuracy(output, target, topk=(1, 5))
 
