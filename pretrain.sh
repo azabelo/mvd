@@ -21,7 +21,7 @@ USE_CLIP="$9"
 
 
 OUTPUT_DIR='OUTPUT/mvd_vit_base_with_vit_base_teacher_HMDB51'
-DATA_PATH='10classes.csv'
+DATA_PATH='5perclass.csv'
 DATA_ROOT='hmdb51_mp4'
 #DATA_PATH='tiny_k400_train.csv'
 #DATA_ROOT='tiny-Kinetics-400'
