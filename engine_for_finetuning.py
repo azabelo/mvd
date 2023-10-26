@@ -176,7 +176,7 @@ def validation_one_epoch(data_loader, model, device):
             output = model(videos)
             shape = output.shape
             loss = criterion(output, target)
-        print(shape)
+        print("here", shape)
 
         acc1, acc5 = accuracy(output, target, topk=(1, 5))
 
