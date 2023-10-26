@@ -253,6 +253,25 @@ def main(args, ds_init):
 
     cudnn.benchmark = True
 
+    # # only for linear probing
+    # import torch.nn as nn
+    # class ExtendedModel(nn.Module):
+    #     def __init__(self, base_model, linear_size):
+    #         super(ExtendedModel, self).__init()
+    #
+    #         # Load the pre-trained model and freeze it
+    #         self.base_model = base_model
+    #         for param in self.base_model.parameters():
+    #             param.requires_grad = False
+    #
+    #         # Add a trainable linear layer
+    #         self.linear_layer = nn.Linear(32 * 51, 32 * 51)
+    #
+    #     def forward(self, x):
+    #         # Pass the input through the base model
+    #         features = self.base_model(x)
+
+
     model = create_model(
         args.model,
         pretrained=False,
@@ -270,6 +289,11 @@ def main(args, ds_init):
         fc_drop_rate=args.fc_drop_rate,
         use_checkpoint=args.use_checkpoint,
     )
+
+    for name, param in model.named_parameters():
+        print(f"Layer: {name}, Shape: {param.shape}")
+
+    quit(0)
 
     patch_size = model.patch_embed.patch_size
     print("Patch size = %s" % str(patch_size))
