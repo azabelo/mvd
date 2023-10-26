@@ -253,7 +253,6 @@ def main(args, ds_init):
 
     cudnn.benchmark = True
 
-    # dont forget to change the pretrained True as needed
     model = create_model(
         args.model,
         pretrained=False,
