@@ -290,10 +290,14 @@ def main(args, ds_init):
         use_checkpoint=args.use_checkpoint,
     )
 
-    for name, param in model.named_parameters():
-        print(f"Layer: {name}, Shape: {param.shape}")
 
-    quit(0)
+    # only if linear probing!!!!!!!!!!!!!!!!!!!!!!!!#
+
+    for name, param in model.named_parameters():
+        if name == "head.weight" or name == "head.bias":
+            param.requires_grad = True
+        else:
+            param.requires_grad = False
 
     patch_size = model.patch_embed.patch_size
     print("Patch size = %s" % str(patch_size))
