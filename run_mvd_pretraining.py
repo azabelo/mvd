@@ -456,6 +456,8 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
         args.weight_decay_end = args.weight_decay
     wd_schedule_values = utils.cosine_scheduler(
         args.weight_decay, args.weight_decay_end, args.epochs, num_training_steps_per_epoch)
+    print(len(wd_schedule_values))
+    print(len(lr_schedule_values))
     print("Max WD = %.7f, Min WD = %.7f" % (max(wd_schedule_values), min(wd_schedule_values)))
 
     if args.output_dir and utils.is_main_process():
