@@ -292,6 +292,7 @@ def main(args, ds_init):
     )
 
     # only if linear probing!!!!!!!!!!!!!!!!!!!!!!!!#
+
     # for name, param in model.named_parameters():
     #     if name == "head.weight" or name == "head.bias":
     #         param.requires_grad = True
@@ -299,16 +300,17 @@ def main(args, ds_init):
     #     else:
     #         param.requires_grad = False
 
+
     # linear probing with an additional linear layer:
 
-    for name, param in model.named_parameters():
-        param.requires_grad = False
-    intermediate_layer = nn.Linear(768, 768)  # Map 768 to 768
-    model.head.weight.requires_grad = False
-    model.head.bias.requires_grad = False
-    new_head = nn.Linear(768, 51)  # 51 is the number of output classes
-    # Replace the existing head with the new head
-    model.head = nn.Sequential(intermediate_layer, new_head)
+    # for name, param in model.named_parameters():
+    #     param.requires_grad = False
+    # intermediate_layer = nn.Linear(768, 768)  # Map 768 to 768
+    # model.head.weight.requires_grad = False
+    # model.head.bias.requires_grad = False
+    # new_head = nn.Linear(768, 51)  # 51 is the number of output classes
+    # # Replace the existing head with the new head
+    # model.head = nn.Sequential(intermediate_layer, new_head)
 
 
     patch_size = model.patch_embed.patch_size
