@@ -306,7 +306,7 @@ def main(args, ds_init):
                 print(f"Output Embedding Features (hidden size): {module.embedding_dim}")
         print()
 
-    exit(0)
+    exit(1)
 
     # only if linear probing!!!!!!!!!!!!!!!!!!!!!!!!#
 
