@@ -290,24 +290,6 @@ def main(args, ds_init):
         use_checkpoint=args.use_checkpoint,
     )
 
-    for name, module in model.named_children():
-        print(f"Layer Name: {name}")
-        if isinstance(module, torch.nn.Module):
-            # For linear layers, get the input and output dimensions
-            if isinstance(module, torch.nn.Linear):
-                print(f"Input Features: {module.in_features}")
-                print(f"Output Features: {module.out_features}")
-            # For layer normalization layers, they don't have specific input/output features
-            elif isinstance(module, torch.nn.LayerNorm):
-                print(f"Layer Normalization Layer")
-            # For the embedding layer, you can get the input and output dimensions
-            elif name == "embedding":
-                print(f"Input Embedding Features: {module.num_embeddings}")
-                print(f"Output Embedding Features (hidden size): {module.embedding_dim}")
-        print()
-
-    exit(1)
-
     # only if linear probing!!!!!!!!!!!!!!!!!!!!!!!!#
 
     for name, param in model.named_parameters():
