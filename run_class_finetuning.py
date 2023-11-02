@@ -295,6 +295,7 @@ def main(args, ds_init):
     for name, param in model.named_parameters():
         if name == "head.weight" or name == "head.bias":
             param.requires_grad = True
+            print(f"Layer Name: {name}, Shape: {param.shape}")
         else:
             param.requires_grad = False
 
