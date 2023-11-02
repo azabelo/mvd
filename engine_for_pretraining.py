@@ -105,6 +105,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
             )
             loss_value_img_feat = loss_img_feat.item()
 
+            print("video feature shape: ", output_video_features.shape)
             B, _, D = output_video_features.shape
             loss_vid_feat = loss_func_vid_feat(
                 input=output_video_features,
