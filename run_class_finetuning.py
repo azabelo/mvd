@@ -299,6 +299,8 @@ def main(args, ds_init):
         else:
             param.requires_grad = False
 
+    exit(0)
+
     patch_size = model.patch_embed.patch_size
     print("Patch size = %s" % str(patch_size))
     args.window_size = (args.num_frames // 2, args.input_size // patch_size[0], args.input_size // patch_size[1])
