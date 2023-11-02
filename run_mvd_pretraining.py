@@ -182,12 +182,17 @@ def get_args():
 def get_image_teacher_model(args):
     print(args.use_clip)
     if args.use_clip:
-        print("using clip")
+
         args.image_teacher_model = 'vit_base_patch16_224'
 
+        #print("using clip")
         #args.image_teacher_model_ckpt_path = 'clip_model.pth'
 
-        args.image_teacher_model_ckpt_path = 'SLIP'
+        # print("using slip")
+        #args.image_teacher_model_ckpt_path = 'SLIP'
+
+        print("using EVA-clip")
+        args.image_teacher_model_ckpt_path = 'EVA-CLIP.pt'
 
         # getting clip model
         device = "cuda" if torch.cuda.is_available() else "cpu"
