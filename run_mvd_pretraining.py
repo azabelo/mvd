@@ -247,7 +247,7 @@ def get_pretrained_teacher(args):
         pretrained=False,
         img_size=args.input_size,
         num_classes=51,
-        all_frames=args.num_frames * args.num_segments,
+        all_frames=args.num_frames * 1,
         tubelet_size=args.tubelet_size,
         drop_rate=args.drop,
         drop_path_rate=args.drop_path,
