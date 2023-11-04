@@ -245,87 +245,9 @@ def get_pretrained_teacher(args):
     model = create_model(
         'vit_base_patch16_224',
         pretrained=False,
-        img_size=args.input_size,
-        num_classes=51,
-        all_frames=args.num_frames * 1,
-        tubelet_size=args.tubelet_size,
-        drop_rate=args.drop,
-        drop_path_rate=args.drop_path,
-        attn_drop_rate=args.attn_drop_rate,
-        drop_block_rate=None,
-        use_mean_pooling=args.use_mean_pooling,
-        init_scale=args.init_scale,
-        use_cls_token=args.use_cls_token,
-        fc_drop_rate=args.fc_drop_rate,
-        use_checkpoint=args.use_checkpoint,
+        img_size=args.video_teacher_input_size,
+        drop_path_rate=args.video_teacher_drop_path,
     )
-
-
-    path = 'checkpoint-4799.pth'
-
-    if path.startswith('https'):
-        checkpoint = torch.hub.load_state_dict_from_url(
-            path, map_location='cpu', check_hash=True)
-    else:
-        checkpoint = torch.load(path, map_location='cpu')
-
-    print("Load ckpt from %s" % path)
-    checkpoint_model = None
-    for model_key in args.model_key.split('|'):
-        if model_key in checkpoint:
-            checkpoint_model = checkpoint[model_key]
-            print("Load state_dict by model_key = %s" % model_key)
-            break
-    if checkpoint_model is None:
-        checkpoint_model = checkpoint
-    state_dict = model.state_dict()
-    for k in ['head.weight', 'head.bias']:
-        if k in checkpoint_model and checkpoint_model[k].shape != state_dict[k].shape:
-            print(f"Removing key {k} from pretrained checkpoint")
-            del checkpoint_model[k]
-
-    all_keys = list(checkpoint_model.keys())
-    new_dict = OrderedDict()
-    for key in all_keys:
-        if args.remove_pos_emb and 'pos_embed' in key:
-            continue
-        if key.startswith('backbone.'):
-            new_dict[key[9:]] = checkpoint_model[key]
-        elif key.startswith('encoder.'):
-            new_dict[key[8:]] = checkpoint_model[key]
-        else:
-            new_dict[key] = checkpoint_model[key]
-    checkpoint_model = new_dict
-
-    # interpolate position embedding
-    if 'pos_embed' in checkpoint_model:
-        pos_embed_checkpoint = checkpoint_model['pos_embed']
-        embedding_size = pos_embed_checkpoint.shape[-1] # channel dim
-        num_patches = model.patch_embed.num_patches #
-        num_extra_tokens = model.pos_embed.shape[-2] - num_patches # 0/1
-
-        # height (== width) for the checkpoint position embedding
-        orig_size = int(((pos_embed_checkpoint.shape[-2] - num_extra_tokens)//(args.num_frames // model.patch_embed.tubelet_size)) ** 0.5)
-        # height (== width) for the new position embedding
-        new_size = int((num_patches // (args.num_frames // model.patch_embed.tubelet_size) )** 0.5)
-        # class_token and dist_token are kept unchanged
-        if orig_size != new_size:
-            print("Position interpolate from %dx%d to %dx%d" % (orig_size, orig_size, new_size, new_size))
-            extra_tokens = pos_embed_checkpoint[:, :num_extra_tokens]
-            # only the position tokens are interpolated
-            pos_tokens = pos_embed_checkpoint[:, num_extra_tokens:]
-            # B, L, C -> BT, H, W, C -> BT, C, H, W
-            pos_tokens = pos_tokens.reshape(-1, args.num_frames // model.patch_embed.tubelet_size, orig_size, orig_size, embedding_size)
-            pos_tokens = pos_tokens.reshape(-1, orig_size, orig_size, embedding_size).permute(0, 3, 1, 2)
-            pos_tokens = torch.nn.functional.interpolate(
-                pos_tokens, size=(new_size, new_size), mode='bicubic', align_corners=False)
-            # BT, C, H, W -> BT, H, W, C ->  B, T, H, W, C
-            pos_tokens = pos_tokens.permute(0, 2, 3, 1).reshape(-1, args.num_frames // model.patch_embed.tubelet_size, new_size, new_size, embedding_size)
-            pos_tokens = pos_tokens.flatten(1, 3) # B, L, C
-            new_pos_embed = torch.cat((extra_tokens, pos_tokens), dim=1)
-            checkpoint_model['pos_embed'] = new_pos_embed
-
-    utils.load_state_dict(model, checkpoint_model, prefix=args.model_prefix)
     return model
 
 
@@ -493,27 +415,22 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
 
     video_teacher_model = get_video_teacher_model(args)
     if args.video_teacher_model_ckpt_path:
-        if args.video_teacher_model_ckpt_path == 'video_teacher.pth':
-            if args.video_teacher_model_ckpt_path.startswith('https'):
-                checkpoint = torch.hub.load_state_dict_from_url(
-                    args.video_teacher_model_ckpt_path, map_location='cpu', check_hash=True)
-            else:
-                checkpoint = torch.load(args.video_teacher_model_ckpt_path, map_location='cpu')
-
-            print("Load video teacher ckpt from %s" % args.video_teacher_model_ckpt_path)
-            checkpoint_model = None
-            for model_key in args.model_key.split('|'):
-                if model_key in checkpoint:
-                    checkpoint_model = checkpoint[model_key]
-                    print("Load video state_dict by model_key = %s" % model_key)
-                    break
-
-            if checkpoint_model is None:
-                checkpoint_model = checkpoint
-
+        if args.video_teacher_model_ckpt_path.startswith('https'):
+            checkpoint = torch.hub.load_state_dict_from_url(
+                args.video_teacher_model_ckpt_path, map_location='cpu', check_hash=True)
         else:
-            checkpoint_model = get_pretrained_teacher(args)
-            # freeze all weights
+            checkpoint = torch.load(args.video_teacher_model_ckpt_path, map_location='cpu')
+
+        print("Load video teacher ckpt from %s" % args.video_teacher_model_ckpt_path)
+        checkpoint_model = None
+        for model_key in args.model_key.split('|'):
+            if model_key in checkpoint:
+                checkpoint_model = checkpoint[model_key]
+                print("Load video state_dict by model_key = %s" % model_key)
+                break
+
+        if checkpoint_model is None:
+            checkpoint_model = checkpoint
 
 
         for k in ['head.weight', 'head.bias']:
