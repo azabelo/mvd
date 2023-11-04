@@ -455,6 +455,7 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
     video_teacher_model.to(device)
 
     for name, layer in video_teacher_model.named_children():
+        print(name)
         if name == "head":
             setattr(model, name, torch.nn.Identity())
 
