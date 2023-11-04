@@ -32,6 +32,7 @@ from sklearn.metrics import accuracy_score
 from datasets import build_dataset
 
 #from VideoMAEv2 import run_mae_pretraining as v2
+import VideoMAEv2.models
 
 
 def get_args():
