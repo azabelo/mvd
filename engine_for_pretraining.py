@@ -98,6 +98,8 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
                 if norm_feature:
                     video_teacher_features = LN_vid(video_teacher_features)
 
+                print("video teacher features shape: ", video_teacher_features.shape)
+
             B, _, D = output_features.shape
             loss_img_feat = loss_func_img_feat(
                 input=output_features,
