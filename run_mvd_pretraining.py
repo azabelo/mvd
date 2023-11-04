@@ -238,6 +238,7 @@ def get_video_teacher_model(args):
         img_size=args.video_teacher_input_size,
         drop_path_rate=args.video_teacher_drop_path,
     )
+
     return model
 
 
