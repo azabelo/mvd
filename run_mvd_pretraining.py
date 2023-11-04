@@ -242,8 +242,9 @@ def get_video_teacher_model(args):
     return model
 
 def get_pretrained_teacher(args):
+    #'vit_base_patch16_224',
     model = create_model(
-        'vit_base_patch16_224',
+        'pretrain_masked_video_student_base_patch16_224',
         pretrained=False,
         img_size=args.video_teacher_input_size,
         drop_path_rate=args.video_teacher_drop_path,
