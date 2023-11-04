@@ -26,6 +26,10 @@ DATA_ROOT='hmdb51_mp4'
 #DATA_PATH='tiny_k400_train.csv'
 #DATA_ROOT='tiny-Kinetics-400'
 
+#checkpoint-4799.pth
+#video_teacher.pth
+#vit_b_k710_dl_from_giant.pth
+
 OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         --master_port ${MASTER_PORT} --nnodes=1 \
         --node_rank=0 --master_addr=localhost \
@@ -42,7 +46,7 @@ OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         --video_teacher_model pretrain_videomae_teacher_base_patch16_224 \
         --video_distillation_target_dim 768 \
         --video_distill_loss_func SmoothL1 \
-        --video_teacher_model_ckpt_path 'vit_b_k710_dl_from_giant.pth' \
+        --video_teacher_model_ckpt_path 'checkpoint-4799.pth' \
         --mask_type tube --mask_ratio 0.9 --decoder_depth 2 \
         --batch_size ${BATCH_SIZE} --update_freq ${UPDATE_FREQ} --save_ckpt_freq 100 \
         --num_frames 16 --sampling_rate ${SAMPLING_RATE} \

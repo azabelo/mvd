@@ -232,15 +232,15 @@ def get_image_teacher_model(args):
 
 
 def get_video_teacher_model(args):
-    if args.video_teacher_model == "video_teacher.pth":
-        print(f"Creating teacher model: {args.video_teacher_model}")
-        model = create_model(
-            args.video_teacher_model,
-            pretrained=False,
-            img_size=args.video_teacher_input_size,
-            drop_path_rate=args.video_teacher_drop_path,
-        )
-    else:
+
+    print(f"Creating teacher model: {args.video_teacher_model}")
+    model = create_model(
+        args.video_teacher_model,
+        pretrained=False,
+        img_size=args.video_teacher_input_size,
+        drop_path_rate=args.video_teacher_drop_path,
+    )
+    if False:
         print(f"Creating teacher model: {args.video_teacher_model}")
         #model = v2.get_modelv2()
         model = create_model(
