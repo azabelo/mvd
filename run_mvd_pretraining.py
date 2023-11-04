@@ -248,7 +248,7 @@ def get_video_teacher_model(args):
             pretrained=False,
             drop_path_rate=args.video_teacher_drop_path,
             drop_block_rate=None,
-            num_frames=args.num_frames,
+            all_frames=args.num_frames,
             tubelet_size=args.tubelet_size,
             decoder_depth=0,
             with_cp=False)
