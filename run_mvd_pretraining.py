@@ -444,6 +444,7 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
         new_dict = OrderedDict()
         if args.video_teacher_model_ckpt_path == 'video_teacher.pth':
             for key in all_keys:
+                print(key)
                 if key.startswith('backbone.'):
                     new_dict[key[9:]] = checkpoint_model[key]
                 elif 'pos_embed' in key:
