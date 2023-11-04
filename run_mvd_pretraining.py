@@ -442,25 +442,30 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
 
         all_keys = list(checkpoint_model.keys())
         new_dict = OrderedDict()
-        for key in all_keys:
-            if key.startswith('backbone.'):
-                new_dict[key[9:]] = checkpoint_model[key]
-            elif 'pos_embed' in key:
-                continue
-            else:
-                new_dict[key] = checkpoint_model[key]
+        if args.video_teacher_model_ckpt_path == 'video_teacher.pth':
+            for key in all_keys:
+                if key.startswith('backbone.'):
+                    new_dict[key[9:]] = checkpoint_model[key]
+                elif 'pos_embed' in key:
+                    continue
+                else:
+                    new_dict[key] = checkpoint_model[key]
+        elif args.video_teacher_model_ckpt_path == 'checkpoint-4799.pth':
+            for key in all_keys:
+                if key.startswith('backbone.'):
+                    new_dict[key[9:]] = checkpoint_model[key]
+                elif 'pos_embed' in key:
+                    continue
+                else:
+                    new_dict["encoder." + key] = checkpoint_model[key]
+
+
         checkpoint_model = new_dict
 
         utils.load_state_dict(video_teacher_model, checkpoint_model, prefix=args.model_prefix)
 
     video_teacher_model.to(device)
 
-    for name, layer in video_teacher_model.named_children():
-        print(name)
-        # print the number of params in the layer
-        if name == "head" or name == "fc_norm":
-            print("found head")
-            setattr(video_teacher_model, name, torch.nn.Identity())
 
     print(video_teacher_model)
     #print("Model = %s" % str(model_without_ddp))
