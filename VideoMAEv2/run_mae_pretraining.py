@@ -254,17 +254,17 @@ def get_argsv2():
     return parser.parse_args()
 
 
-def get_modelv2(args):
-    print(f"Creating VIDEOMAEV2 model: {args.model}")
+def get_modelv2(drop_path, num_frames, tubelet_size, decoder_depth, with_checkpoint):
+    print(f"Creating VIDEOMAEV2 model: pretrain_videomae_base_patch16_224")
     model = create_model(
-        args.model,
+        'pretrain_videomae_base_patch16_224',
         pretrained=False,
-        drop_path_rate=args.drop_path,
+        drop_path_rate=drop_path,
         drop_block_rate=None,
-        all_frames=args.num_frames,
-        tubelet_size=args.tubelet_size,
-        decoder_depth=args.decoder_depth,
-        with_cp=args.with_checkpoint)
+        all_frames=num_frames,
+        tubelet_size=tubelet_size,
+        decoder_depth=0,
+        with_cp=with_checkpoint)
 
     if version.parse(torch.__version__) > version.parse('1.13.1'):
         torch.set_float32_matmul_precision('high')
@@ -272,6 +272,24 @@ def get_modelv2(args):
 
     return model
 #
+# def get_modelv2(args):
+#     print(f"Creating VIDEOMAEV2 model: {args.model}")
+#     model = create_model(
+#         args.model,
+#         pretrained=False,
+#         drop_path_rate=args.drop_path,
+#         drop_block_rate=None,
+#         all_frames=args.num_frames,
+#         tubelet_size=args.tubelet_size,
+#         decoder_depth=args.decoder_depth,
+#         with_cp=args.with_checkpoint)
+#
+#     if version.parse(torch.__version__) > version.parse('1.13.1'):
+#         torch.set_float32_matmul_precision('high')
+#         model = torch.compile(model)
+#
+#     return model
+
 #
 # def main(args):
 #     utils.init_distributed_mode(args)

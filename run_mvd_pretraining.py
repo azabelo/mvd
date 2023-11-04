@@ -31,7 +31,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 from datasets import build_dataset
 
-from VideoMAEv2 import run_mae_pretraining as v2
+#from VideoMAEv2 import run_mae_pretraining as v2
 
 
 def get_args():
@@ -241,8 +241,16 @@ def get_video_teacher_model(args):
         )
     else:
         print(f"Creating teacher model: {args.video_teacher_model}")
-        v2args = v2.get_argsv2()
-        model = v2.get_modelv2(v2args)
+        #model = v2.get_modelv2()
+        model = create_model(
+            'pretrain_videomae_base_patch16_224',
+            pretrained=False,
+            drop_path_rate=args.video_teacher_drop_path,
+            drop_block_rate=None,
+            num_frames=args.num_frames,
+            tubelet_size=args.tubelet_size,
+            decoder_depth=0,
+            with_cp=False)
 
     return model
 
