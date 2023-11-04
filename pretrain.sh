@@ -30,7 +30,7 @@ DATA_ROOT='hmdb51_mp4'
 #video_teacher.pth
 #vit_b_k710_dl_from_giant.pth
 
-#pretrain_masked_video_student_base_patch16_224
+#
 
 OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         --master_port ${MASTER_PORT} --nnodes=1 \
@@ -38,7 +38,7 @@ OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         run_mvd_pretraining.py \
         --data_path ${DATA_PATH} \
         --data_root ${DATA_ROOT} \
-        --model vit_base_patch16_224 \
+        --model pretrain_masked_video_student_base_patch16_224 \
         --log_dir ${OUTPUT_DIR} \
         --output_dir ${OUTPUT_DIR} \
         --image_teacher_model vit_base_patch16_224 \
@@ -53,4 +53,5 @@ OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         --batch_size ${BATCH_SIZE} --update_freq ${UPDATE_FREQ} --save_ckpt_freq 100 \
         --num_frames 16 --sampling_rate ${SAMPLING_RATE} \
         --lr ${LEARNING_RATE} --min_lr 1e-4 --drop_path 0.1 --warmup_epochs ${WARMUP} --epochs ${EPOCHS} \
-        --use_clip ${USE_CLIP} --use_cls_token --use_checkpoint --auto_resume
+        --use_clip ${USE_CLIP} --use_cls_token --use_checkpoint --auto_resume \
+        --video_teacher_model vit_base_patch16_224
