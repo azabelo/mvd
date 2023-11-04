@@ -48,10 +48,10 @@ OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         --video_teacher_model pretrain_videomae_teacher_base_patch16_224 \
         --video_distillation_target_dim 768 \
         --video_distill_loss_func SmoothL1 \
-        --video_teacher_model_ckpt_path 'video_teacher.pth' \
+        --video_teacher_model_ckpt_path 'checkpoint-4799.pth' \
         --mask_type tube --mask_ratio 0.9 --decoder_depth 2 \
         --batch_size ${BATCH_SIZE} --update_freq ${UPDATE_FREQ} --save_ckpt_freq 100 \
         --num_frames 16 --sampling_rate ${SAMPLING_RATE} \
         --lr ${LEARNING_RATE} --min_lr 1e-4 --drop_path 0.1 --warmup_epochs ${WARMUP} --epochs ${EPOCHS} \
         --use_clip ${USE_CLIP} --use_cls_token --use_checkpoint --auto_resume \
-        --video_teacher_model vit_base_patch16_224
+        --video_teacher_model pretrain_masked_video_student_base_patch16_224
