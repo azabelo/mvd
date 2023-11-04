@@ -453,7 +453,8 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
 
     video_teacher_model.to(device)
 
-    print("Model = %s" % str(model_without_ddp))
+    print(video_teacher_model)
+    #print("Model = %s" % str(model_without_ddp))
     print('number of params: {} M'.format(n_parameters / 1e6))
 
     total_batch_size = args.batch_size * args.num_sample * args.update_freq * utils.get_world_size()
