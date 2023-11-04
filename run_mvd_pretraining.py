@@ -31,6 +31,8 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 from datasets import build_dataset
 
+from VideoMAEv2 import run_mae_pretraining as v2
+
 
 def get_args():
     parser = argparse.ArgumentParser('MVD pre-training script', add_help=False)
@@ -229,13 +231,19 @@ def get_image_teacher_model(args):
 
 
 def get_video_teacher_model(args):
-    print(f"Creating teacher model: {args.video_teacher_model}")
-    model = create_model(
-        args.video_teacher_model,
-        pretrained=False,
-        img_size=args.video_teacher_input_size,
-        drop_path_rate=args.video_teacher_drop_path,
-    )
+    if args.video_teacher_model == "video_teacher.pth":
+        print(f"Creating teacher model: {args.video_teacher_model}")
+        model = create_model(
+            args.video_teacher_model,
+            pretrained=False,
+            img_size=args.video_teacher_input_size,
+            drop_path_rate=args.video_teacher_drop_path,
+        )
+    else:
+        print(f"Creating teacher model: {args.video_teacher_model}")
+        v2args = v2.get_argsv2()
+        model = v2.get_modelv2(v2args)
+
     return model
 
 

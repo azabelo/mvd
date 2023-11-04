@@ -31,7 +31,7 @@ from utils import NativeScalerWithGradNormCount as NativeScaler
 from utils import multiple_pretrain_samples_collate
 
 
-def get_args():
+def get_argsv2():
     parser = argparse.ArgumentParser(
         'VideoMAE v2 pre-training script', add_help=False)
     parser.add_argument('--batch_size', default=64, type=int)
@@ -252,8 +252,8 @@ def get_args():
     return parser.parse_args()
 
 
-def get_model(args):
-    print(f"Creating model: {args.model}")
+def get_modelv2(args):
+    print(f"Creating VIDEOMAEV2 model: {args.model}")
     model = create_model(
         args.model,
         pretrained=False,
@@ -285,7 +285,7 @@ def main(args):
     random.seed(seed)
     cudnn.benchmark = True
 
-    model = get_model(args)
+    model = get_modelv2(args)
     patch_size = model.encoder.patch_embed.patch_size
     print("Patch size = %s" % str(patch_size))
     args.window_size = (args.num_frames // args.tubelet_size,
@@ -449,7 +449,7 @@ def main(args):
 
 
 if __name__ == '__main__':
-    opts = get_args()
+    opts = get_argsv2()
     if opts.output_dir:
         Path(opts.output_dir).mkdir(parents=True, exist_ok=True)
     main(opts)
