@@ -457,7 +457,7 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
     for name, layer in video_teacher_model.named_children():
         print(name)
         # print the number of params in the layer
-        if name == "head":
+        if name == "head" or name == "fc_norm":
             print("found head")
             setattr(video_teacher_model, name, torch.nn.Identity())
 
