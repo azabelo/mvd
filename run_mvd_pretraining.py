@@ -248,6 +248,9 @@ def get_pretrained_teacher(args):
         img_size=args.video_teacher_input_size,
         drop_path_rate=args.video_teacher_drop_path,
     )
+    if args.video_teacher_model_ckpt_path == 'checkpoint-4799.pth':
+        video_teacher_model = torch.nn.Sequential(*list(model.children())[:-1])
+
     return model
 
 
@@ -452,9 +455,6 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
         utils.load_state_dict(video_teacher_model, checkpoint_model, prefix=args.model_prefix)
 
     video_teacher_model.to(device)
-
-    if args.video_teacher_model_ckpt_path == 'checkpoint-4799.pth':
-        video_teacher_model = torch.nn.Sequential(*list(video_teacher_model.children())[:-1])
 
     print(video_teacher_model)
     #print("Model = %s" % str(model_without_ddp))
