@@ -22,7 +22,7 @@ from packaging import version
 from timm.models import create_model
 
 # NOTE: Do not comment `import models`, it is used to register models
-import models  # noqa: F401
+import VideoMAEv2.models  # noqa: F401
 import utils
 from dataset import build_pretraining_dataset
 from engine_for_pretraining import train_one_epoch
