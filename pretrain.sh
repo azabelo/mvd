@@ -30,7 +30,7 @@ DATA_ROOT='hmdb51_mp4'
 #video_teacher.pth
 #vit_b_k710_dl_from_giant.pth
 
-#
+
 
 OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         --master_port ${MASTER_PORT} --nnodes=1 \
