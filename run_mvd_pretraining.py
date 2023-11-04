@@ -453,6 +453,9 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
 
     video_teacher_model.to(device)
 
+    if args.video_teacher_model_ckpt_path == 'checkpoint-4799.pth':
+        video_teacher_model = torch.nn.Sequential(*list(video_teacher_model.children())[:-1])
+
     print(video_teacher_model)
     #print("Model = %s" % str(model_without_ddp))
     print('number of params: {} M'.format(n_parameters / 1e6))
