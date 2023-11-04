@@ -238,6 +238,8 @@ def get_video_teacher_model(args):
         img_size=args.video_teacher_input_size,
         drop_path_rate=args.video_teacher_drop_path,
     )
+    if args.video_teacher_model_ckpt_path == 'checkpoint-4799.pth':
+        model = torch.nn.Sequential(*list(model.children())[:-1])
 
     return model
 
@@ -248,8 +250,6 @@ def get_pretrained_teacher(args):
         img_size=args.video_teacher_input_size,
         drop_path_rate=args.video_teacher_drop_path,
     )
-    if args.video_teacher_model_ckpt_path == 'checkpoint-4799.pth':
-        model = torch.nn.Sequential(*list(model.children())[:-1])
 
     return model
 
