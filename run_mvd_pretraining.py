@@ -249,7 +249,7 @@ def get_pretrained_teacher(args):
         drop_path_rate=args.video_teacher_drop_path,
     )
     if args.video_teacher_model_ckpt_path == 'checkpoint-4799.pth':
-        video_teacher_model = torch.nn.Sequential(*list(model.children())[:-1])
+        model = torch.nn.Sequential(*list(model.children())[:-1])
 
     return model
 
