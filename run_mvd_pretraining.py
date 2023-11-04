@@ -246,7 +246,7 @@ def get_pretrained_teacher(args):
         'vit_base_patch16_224',
         pretrained=False,
         img_size=args.input_size,
-        num_classes=args.nb_classes,
+        num_classes=51,
         all_frames=args.num_frames * args.num_segments,
         tubelet_size=args.tubelet_size,
         drop_rate=args.drop,
@@ -510,6 +510,7 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
 
             if checkpoint_model is None:
                 checkpoint_model = checkpoint
+
         else:
             checkpoint_model = get_pretrained_teacher(args)
             # freeze all weights
