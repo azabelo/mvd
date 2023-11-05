@@ -275,7 +275,6 @@ def main(args, ds_init):
 
     class S3DClassifier(torch.nn.Module):
         def __init__(self, num_classes):
-            super(S3DClassifier, self).__init()
 
             # Load the S3D video encoder
             self.video_encoder = S3D('pretrained_models/s3d_dict.npy', 512)
