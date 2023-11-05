@@ -294,7 +294,7 @@ def main(args, ds_init):
             return output
 
     if args.finetune == 's3d':
-        S3DClassifier(args.nb_classes)
+        model = S3DClassifier(args.nb_classes)
 
     else:
         model = create_model(
