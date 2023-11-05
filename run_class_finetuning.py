@@ -534,10 +534,36 @@ def main(args, ds_init):
     print("Number of training examples = %d" % len(dataset_train))
     print("Number of training training per epoch = %d" % num_training_steps_per_epoch)
 
-    skip_weight_decay_list = ()
-    assigner = None
+
+
     if args.finetune == 's3d':
-        pass
+        skip_weight_decay_list = ()
+        assigner = None
+
+        if args.enable_deepspeed:
+            loss_scaler = None
+            optimizer_params = get_parameter_groups(
+                model, args.weight_decay, skip_weight_decay_list,
+                assigner.get_layer_id if assigner is not None else None,
+                assigner.get_scale if assigner is not None else None)
+            model, optimizer, _, _ = ds_init(
+                args=args, model=model, model_parameters=optimizer_params, dist_init_required=not args.distributed,
+            )
+
+            print("model.gradient_accumulation_steps() = %d" % model.gradient_accumulation_steps())
+            assert model.gradient_accumulation_steps() == args.update_freq
+        else:
+            if args.distributed:
+                model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu],
+                                                                  find_unused_parameters=True)
+                model_without_ddp = model.module
+
+            optimizer = create_optimizer(
+                args, model_without_ddp, skip_list=skip_weight_decay_list,
+                get_num_layer=assigner.get_layer_id if assigner is not None else None,
+                get_layer_scale=assigner.get_scale if assigner is not None else None)
+            loss_scaler = NativeScaler()
+
     else:
         num_layers = model_without_ddp.get_num_layers()
 
@@ -552,29 +578,30 @@ def main(args, ds_init):
         skip_weight_decay_list = model.no_weight_decay()
         print("Skip weight decay list: ", skip_weight_decay_list)
 
+        if args.enable_deepspeed:
+            loss_scaler = None
+            optimizer_params = get_parameter_groups(
+                model, args.weight_decay, skip_weight_decay_list,
+                assigner.get_layer_id if assigner is not None else None,
+                assigner.get_scale if assigner is not None else None)
+            model, optimizer, _, _ = ds_init(
+                args=args, model=model, model_parameters=optimizer_params, dist_init_required=not args.distributed,
+            )
 
-    if args.enable_deepspeed:
-        loss_scaler = None
-        optimizer_params = get_parameter_groups(
-            model, args.weight_decay, skip_weight_decay_list,
-            assigner.get_layer_id if assigner is not None else None,
-            assigner.get_scale if assigner is not None else None)
-        model, optimizer, _, _ = ds_init(
-            args=args, model=model, model_parameters=optimizer_params, dist_init_required=not args.distributed,
-        )
+            print("model.gradient_accumulation_steps() = %d" % model.gradient_accumulation_steps())
+            assert model.gradient_accumulation_steps() == args.update_freq
+        else:
+            if args.distributed:
+                model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu], find_unused_parameters=True)
+                model_without_ddp = model.module
 
-        print("model.gradient_accumulation_steps() = %d" % model.gradient_accumulation_steps())
-        assert model.gradient_accumulation_steps() == args.update_freq
-    else:
-        if args.distributed:
-            model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[args.gpu], find_unused_parameters=True)
-            model_without_ddp = model.module
+            optimizer = create_optimizer(
+                args, model_without_ddp, skip_list=skip_weight_decay_list,
+                get_num_layer=assigner.get_layer_id if assigner is not None else None,
+                get_layer_scale=assigner.get_scale if assigner is not None else None)
+            loss_scaler = NativeScaler()
 
-        optimizer = create_optimizer(
-            args, model_without_ddp, skip_list=skip_weight_decay_list,
-            get_num_layer=assigner.get_layer_id if assigner is not None else None, 
-            get_layer_scale=assigner.get_scale if assigner is not None else None)
-        loss_scaler = NativeScaler()
+
 
     print("Use step level LR scheduler!")
     lr_schedule_values = utils.cosine_scheduler(
