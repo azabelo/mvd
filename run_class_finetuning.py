@@ -534,8 +534,8 @@ def main(args, ds_init):
     print("Number of training examples = %d" % len(dataset_train))
     print("Number of training training per epoch = %d" % num_training_steps_per_epoch)
 
-    num_layers = 0
     skip_weight_decay_list = False
+    assigner = None
     if args.finetune == 's3d':
         pass
     else:
