@@ -293,6 +293,7 @@ def main(args, ds_init):
 
             return output
 
+    model = None
     if args.finetune == 's3d':
         model = S3DClassifier(args.nb_classes)
 
