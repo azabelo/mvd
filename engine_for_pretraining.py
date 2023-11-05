@@ -63,6 +63,8 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         videos_for_teacher = videos_for_teacher.to(device, non_blocking=True)
         bool_masked_pos = bool_masked_pos.to(device, non_blocking=True).flatten(1).to(torch.bool)
         B, C, T, H, W = videos.shape
+        print("video shape , ", videos.shape)
+        print("tubelet size ", tubelet_size)
 
         assert H == W == 224, "input size must be 224 for CLIP"
 
@@ -75,8 +77,6 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         with torch.cuda.amp.autocast():
             output_features, output_video_features = model(videos, bool_masked_pos)
             with torch.no_grad():
-                #print the name of the model
-                print("model name: ", image_teacher_model.__class__.__name__)
                 image_teacher_model.eval()
                 if time_stride_loss:
                     teacher_features = image_teacher_model(
