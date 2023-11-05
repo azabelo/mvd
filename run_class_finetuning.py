@@ -637,6 +637,7 @@ def main(args, ds_init):
         #
         #     print(f'Max accuracy: {max_accuracy:.2f}%')
 
+
         train_stats = train_one_epoch(
             model, criterion, data_loader_train, optimizer,
             device, epoch, loss_scaler, args.clip_grad, model_ema, mixup_fn,
