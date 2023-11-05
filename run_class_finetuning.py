@@ -26,6 +26,7 @@ import modeling_finetune
 import torch.nn as nn
 
 import wandb
+from s3d import S3D
 
 
 def get_args():
@@ -272,24 +273,52 @@ def main(args, ds_init):
     #         # Pass the input through the base model
     #         features = self.base_model(x)
 
+    class S3DClassifier(torch.nn.Module):
+        def __init__(self, num_classes):
+            super(S3DClassifier, self).__init()
 
-    model = create_model(
-        args.model,
-        pretrained=False,
-        img_size=args.input_size,
-        num_classes=args.nb_classes,
-        all_frames=args.num_frames * args.num_segments,
-        tubelet_size=args.tubelet_size,
-        drop_rate=args.drop,
-        drop_path_rate=args.drop_path,
-        attn_drop_rate=args.attn_drop_rate,
-        drop_block_rate=None,
-        use_mean_pooling=args.use_mean_pooling,
-        init_scale=args.init_scale,
-        use_cls_token=args.use_cls_token,
-        fc_drop_rate=args.fc_drop_rate,
-        use_checkpoint=args.use_checkpoint,
-    )
+            # Load the S3D video encoder
+            self.video_encoder = S3D('pretrained_models/s3d_dict.npy', 512)
+            self.video_encoder.load_state_dict(torch.load('pretrained_models/s3d_howto100m.pth'))
+
+            # Add a linear layer for classification
+            self.classification_layer = torch.nn.Linear(512, num_classes)
+
+        def forward(self, video_frames):
+            # Forward pass through the video encoder
+            video_embedding = self.video_encoder(video_frames)['video_embedding']
+
+            # Apply the classification linear layer
+            output = self.classification_layer(video_embedding)
+
+            return output
+
+    if args.finetune == 's3d':
+        S3DClassifier(args.nb_classes)
+
+    else:
+        model = create_model(
+            args.model,
+            pretrained=False,
+            img_size=args.input_size,
+            num_classes=args.nb_classes,
+            all_frames=args.num_frames * args.num_segments,
+            tubelet_size=args.tubelet_size,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+            attn_drop_rate=args.attn_drop_rate,
+            drop_block_rate=None,
+            use_mean_pooling=args.use_mean_pooling,
+            init_scale=args.init_scale,
+            use_cls_token=args.use_cls_token,
+            fc_drop_rate=args.fc_drop_rate,
+            use_checkpoint=args.use_checkpoint,
+        )
+
+        patch_size = model.patch_embed.patch_size
+        print("Patch size = %s" % str(patch_size))
+        args.window_size = (args.num_frames // 2, args.input_size // patch_size[0], args.input_size // patch_size[1])
+        args.patch_size = patch_size
 
     # only if linear probing!!!!!!!!!!!!!!!!!!!!!!!!#
 
@@ -313,10 +342,7 @@ def main(args, ds_init):
     # model.head = nn.Sequential(intermediate_layer, new_head)
 
 
-    patch_size = model.patch_embed.patch_size
-    print("Patch size = %s" % str(patch_size))
-    args.window_size = (args.num_frames // 2, args.input_size // patch_size[0], args.input_size // patch_size[1])
-    args.patch_size = patch_size
+
 
     dataset_train, args.nb_classes = build_dataset(is_train=True, test_mode=False, args=args)
     if args.disable_eval_during_finetuning:
@@ -395,7 +421,7 @@ def main(args, ds_init):
             prob=args.mixup_prob, switch_prob=args.mixup_switch_prob, mode=args.mixup_mode,
             label_smoothing=args.smoothing, num_classes=args.nb_classes)
 
-    if args.finetune:
+    if args.finetune != 's3d':
         if args.finetune.startswith('https'):
             checkpoint = torch.hub.load_state_dict_from_url(
                 args.finetune, map_location='cpu', check_hash=True)
