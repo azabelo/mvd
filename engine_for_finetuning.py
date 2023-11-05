@@ -14,8 +14,9 @@ import torch.nn.functional as F
 import wandb
 
 def train_class_batch(model, samples, target, criterion):
+    print("input shape: ", samples.shape)
     outputs = model(samples)
-    print(outputs.shape)
+    print("output shape: ", outputs.shape)
     # print(target.shape)
     # print(target)
     # print(outputs)
