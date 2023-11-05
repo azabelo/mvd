@@ -423,8 +423,8 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
         else:
             checkpoint = torch.load(args.video_teacher_model_ckpt_path, map_location='cpu')
         checkpoint = checkpoint['module']
-        print("len = ", len(checkpoint))
-        checkpoint = {key: value for key, value in checkpoint}
+        print(type(checkpoint))
+        print(checkpoint.keys())
 
         print("Load video teacher ckpt from %s" % args.video_teacher_model_ckpt_path)
         checkpoint_model = None
