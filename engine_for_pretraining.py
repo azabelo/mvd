@@ -78,6 +78,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
             output_features, output_video_features = model(videos, bool_masked_pos)
             with torch.no_grad():
                 image_teacher_model.eval()
+                print("model name: ", image_teacher_model.__class__.__name__)
                 if time_stride_loss:
                     teacher_features = image_teacher_model(
                         TF.normalize(rearrange(videos_for_teacher[:, :, ::tubelet_size, :, :], 'b c t h w -> (b t) c h w'),
