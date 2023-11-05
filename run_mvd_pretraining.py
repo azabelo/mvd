@@ -242,7 +242,6 @@ def get_video_teacher_model(args):
     return model
 
 def get_pretrained_teacher(args):
-    #'vit_base_patch16_224',
     model = create_model(
         'pretrain_masked_video_student_base_patch16_224',
         pretrained=False,

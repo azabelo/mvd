@@ -27,15 +27,6 @@ sudo apt-get install unzip
 unzip hmdb51_mp4.zip
 
 
-
-######## MAKE CSV FILE ############
-
-gdown https://drive.google.com/uc?id=1SERyaCXqPfzhCI4z6WG0UA9m_jdqBSrb --output train.csv
-
-gdown https://drive.google.com/uc?id=1ae_lhZTVrwIfmwyzrP_t2aofN9rPsjtk --output finetune_splits/train.csv
-gdown https://drive.google.com/uc?id=1ae_lhZTVrwIfmwyzrP_t2aofN9rPsjtk --output finetune_splits/train.csv
-gdown https://drive.google.com/uc?id=1ae_lhZTVrwIfmwyzrP_t2aofN9rPsjtk --output finetune_splits/train.csv
-
 ######## GET IMAGE AND VIDEO TEACHERS #########
 
 #default MAE
