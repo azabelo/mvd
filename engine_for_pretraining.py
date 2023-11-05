@@ -83,11 +83,13 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
                         TF.normalize(rearrange(videos_for_teacher[:, :, ::tubelet_size, :, :], 'b c t h w -> (b t) c h w'),
                                     mean=clip_mean, std=clip_std)
                     )
+                    print("raw image feats: ", teacher_features.shape)
                     teacher_features = rearrange(teacher_features, '(b t) l c -> b (t l) c', t=T//tubelet_size)
                 else:
                     teacher_features = image_teacher_model(
                         rearrange(videos_for_teacher, 'b c t h w -> (b t) c h w'),
                     )
+                    print("raw image feats: ", teacher_features.shape)
                     teacher_features = rearrange(teacher_features, '(b t d) l c -> b (t l) (d c)', t=T//tubelet_size, d=tubelet_size)
                 if norm_feature:
                     teacher_features = LN_img(teacher_features)
