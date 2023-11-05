@@ -99,6 +99,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
                     video_teacher_features = LN_vid(video_teacher_features)
 
                 print("video teacher features shape: ", video_teacher_features.shape)
+                print("image teacher features shape: ", teacher_features.shape)
 
             B, _, D = output_features.shape
             loss_img_feat = loss_func_img_feat(
@@ -108,6 +109,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
             loss_value_img_feat = loss_img_feat.item()
 
             print("video feature shape: ", output_video_features.shape)
+            print("image feature shape: ", output_features.shape)
             B, _, D = output_video_features.shape
             loss_vid_feat = loss_func_vid_feat(
                 input=output_video_features,
