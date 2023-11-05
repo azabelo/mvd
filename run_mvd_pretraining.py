@@ -426,6 +426,7 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
         print(type(checkpoint))
         print(checkpoint.keys())
 
+
         print("Load video teacher ckpt from %s" % args.video_teacher_model_ckpt_path)
         checkpoint_model = None
         for model_key in args.model_key.split('|'):
