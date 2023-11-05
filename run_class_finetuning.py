@@ -534,17 +534,24 @@ def main(args, ds_init):
     print("Number of training examples = %d" % len(dataset_train))
     print("Number of training training per epoch = %d" % num_training_steps_per_epoch)
 
-    num_layers = model_without_ddp.get_num_layers()
-    if args.layer_decay < 1.0:
-        assigner = LayerDecayValueAssigner(list(args.layer_decay ** (num_layers + 1 - i) for i in range(num_layers + 2)))
+    num_layers = 0
+    skip_weight_decay_list = False
+    if args.finetune == 's3d':
+        pass
     else:
-        assigner = None
+        num_layers = model_without_ddp.get_num_layers()
 
-    if assigner is not None:
-        print("Assigned values = %s" % str(assigner.values))
+        if args.layer_decay < 1.0:
+            assigner = LayerDecayValueAssigner(list(args.layer_decay ** (num_layers + 1 - i) for i in range(num_layers + 2)))
+        else:
+            assigner = None
 
-    skip_weight_decay_list = model.no_weight_decay()
-    print("Skip weight decay list: ", skip_weight_decay_list)
+        if assigner is not None:
+            print("Assigned values = %s" % str(assigner.values))
+
+        skip_weight_decay_list = model.no_weight_decay()
+        print("Skip weight decay list: ", skip_weight_decay_list)
+
 
     if args.enable_deepspeed:
         loss_scaler = None
