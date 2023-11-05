@@ -13,4 +13,4 @@ print(video_encoder)
 output = video_encoder(input_tensor)
 
 # Print the output shape
-print("Output shape:", output.shape)
+print("Output shape:", output['video_embedding'].shape)
