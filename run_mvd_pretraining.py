@@ -198,6 +198,11 @@ def get_image_teacher_model(args):
         # getting clip model
         device = "cuda" if torch.cuda.is_available() else "cpu"
         model, preprocess = clip.load("ViT-B/16", device=device)
+
+        checkpoint = torch.load(args.image_teacher_model_ckpt_path, map_location='cpu')
+        utils.load_state_dict(model, checkpoint)
+        print("successfully loaded clip based video model")
+
         #
         # # Function to hook into the layers and record the order
         # def hook_fn(module, input, output):
