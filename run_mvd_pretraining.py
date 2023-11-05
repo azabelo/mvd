@@ -422,10 +422,9 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
                 args.video_teacher_model_ckpt_path, map_location='cpu', check_hash=True)
         else:
             checkpoint = torch.load(args.video_teacher_model_ckpt_path, map_location='cpu')
-        checkpoint = checkpoint['module']
-        print(type(checkpoint))
-        print(checkpoint.keys())
 
+        if args.video_teacher_model_ckpt_path == 'vit_b_k710_dl_from_giant.pth':
+            checkpoint = checkpoint['module']
 
         print("Load video teacher ckpt from %s" % args.video_teacher_model_ckpt_path)
         checkpoint_model = None
@@ -437,7 +436,6 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
 
         if checkpoint_model is None:
             checkpoint_model = checkpoint
-
 
         for k in ['head.weight', 'head.bias']:
             if k in checkpoint_model:
@@ -463,7 +461,19 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
                     continue
                 else:
                     new_dict["encoder." + key] = checkpoint_model[key]
+        elif args.video_teacher_model_ckpt_path == 'vit_b_k710_dl_from_giant.pth':
+            for key in all_keys:
+                if key == 'fc_norm.weight':
+                    key = 'norm.weight'
+                elif key == 'fc_norm.bias':
+                    key = 'norm.bias'
 
+                if key.startswith('backbone.'):
+                    new_dict[key[9:]] = checkpoint_model[key]
+                elif 'pos_embed' in key:
+                    continue
+                else:
+                    new_dict["encoder." + key] = checkpoint_model[key]
 
         checkpoint_model = new_dict
 
