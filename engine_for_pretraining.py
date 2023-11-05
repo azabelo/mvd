@@ -75,6 +75,8 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
         with torch.cuda.amp.autocast():
             output_features, output_video_features = model(videos, bool_masked_pos)
             with torch.no_grad():
+                #print the name of the model
+                print("model name: ", model.__class__.__name__)
                 image_teacher_model.eval()
                 if time_stride_loss:
                     teacher_features = image_teacher_model(
