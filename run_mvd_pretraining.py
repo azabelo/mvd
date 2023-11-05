@@ -464,9 +464,11 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
         elif args.video_teacher_model_ckpt_path == 'vit_b_k710_dl_from_giant.pth':
             for key in all_keys:
                 if key == 'fc_norm.weight':
-                    key = 'norm.weight'
+                    new_dict["encoder.norm.weight"] = checkpoint_model[key]
+                    continue
                 elif key == 'fc_norm.bias':
-                    key = 'norm.bias'
+                    new_dict["encoder.norm.bias"] = checkpoint_model[key]
+                    continue
 
                 if key.startswith('backbone.'):
                     new_dict[key[9:]] = checkpoint_model[key]
