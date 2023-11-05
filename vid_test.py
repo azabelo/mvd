@@ -7,6 +7,10 @@ video_encoder.load_state_dict(
 
 input_tensor = torch.rand(1, 16, 3, 224, 224)
 
+print(video_encoder)
+
+exit(0)
+
 output = video_encoder(input_tensor)
 
 # Print the output shape
