@@ -515,6 +515,9 @@ class EVAVisionTransformer(nn.Module):
             else:
                 x = blk(x, rel_pos_bias=rel_pos_bias)
 
+        # i added this (for image teacher)
+        return_all_features = True
+
         if not return_all_features:
             x = self.norm(x)
             if self.fc_norm is not None:
