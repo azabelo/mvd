@@ -524,6 +524,7 @@ class EVAVisionTransformer(nn.Module):
                 return self.fc_norm(x.mean(1))
             else:
                 return x[:, 0]
+        # this is to remove the cls token like you did with regular clip
         return x[:, 1:]
 
     def forward(self, x, return_all_features=False):
