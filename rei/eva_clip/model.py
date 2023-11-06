@@ -277,8 +277,6 @@ class CustomCLIP(nn.Module):
             cast_dtype: Optional[torch.dtype] = None,
             itm_task: bool = False,
     ):
-        # i added this
-        embed_dim = 768
 
         super().__init__()
         self.visual = _build_vision_tower(embed_dim, vision_cfg, quick_gelu, cast_dtype)
