@@ -31,6 +31,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 from datasets import build_dataset
 
+from rei.eva_clip import create_model_and_transforms, get_tokenizer
 
 
 def get_args():
@@ -185,22 +186,23 @@ def get_image_teacher_model(args):
     if args.use_clip:
         args.image_teacher_model = 'vit_base_patch16_224'
 
-        # print("using clip")
+
         # args.image_teacher_model_ckpt_path = 'clip_model.pth'
+        # print("using clip")
+        # device = "cuda" if torch.cuda.is_available() else "cpu"
+        # model, preprocess = clip.load("ViT-B/16", device=device)
 
         # print("using slip")
         #args.image_teacher_model_ckpt_path = 'SLIP'
 
         print("using EVA-clip")
         args.image_teacher_model_ckpt_path = 'EVA-CLIP.pt'
-
-        # getting clip model
+        pretrained = 'EVA-CLIP.pt'
+        model_name = "EVA02-CLIP-B-16"
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        model, preprocess = clip.load("ViT-B/16", device=device)
+        model, _, preprocess = create_model_and_transforms(model_name, pretrained, force_custom_clip=True)
 
-        # checkpoint = torch.load(args.image_teacher_model_ckpt_path, map_location='cpu')
-        # utils.load_state_dict(model, checkpoint)
-        # print("successfully loaded clip based video model")
+
 
         #
         # # Function to hook into the layers and record the order

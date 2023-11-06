@@ -13,6 +13,7 @@ model, _, preprocess = create_model_and_transforms(model_name, pretrained, force
 tokenizer = get_tokenizer(model_name)
 model = model.to(device)
 
+
 image = preprocess(Image.open(image_path)).unsqueeze(0).to(device)
 text = tokenizer(["a diagram of a machine learning model", "rectangles", "a cat"]).to(device)
 
