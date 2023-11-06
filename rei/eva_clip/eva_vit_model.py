@@ -496,6 +496,7 @@ class EVAVisionTransformer(nn.Module):
         batch_size, seq_len, _ = x.size()
 
         cls_tokens = self.cls_token.expand(batch_size, -1, -1)  # stole cls_tokens impl from Phil Wang, thanks
+        print("cls shape: ", cls_tokens.shape)
         x = torch.cat((cls_tokens, x), dim=1)
         if self.pos_embed is not None:
             x = x + self.pos_embed
@@ -519,8 +520,6 @@ class EVAVisionTransformer(nn.Module):
             else:
                 x = blk(x, rel_pos_bias=rel_pos_bias)
 
-        # i added this (for image teacher)
-        return_all_features = True
 
         if not return_all_features:
             x = self.norm(x)
@@ -531,6 +530,9 @@ class EVAVisionTransformer(nn.Module):
         return x
 
     def forward(self, x, return_all_features=False):
+        # i added this (for image teacher)
+        return_all_features = True
+
         if return_all_features:
             return self.forward_features(x, return_all_features)
         x = self.forward_features(x)
