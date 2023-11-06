@@ -530,6 +530,7 @@ class EVAVisionTransformer(nn.Module):
         # i added this (for image teacher)
         return_all_features = True
 
+        print(" in forwards")
         if return_all_features:
             return self.forward_features(x, return_all_features)
         x = self.forward_features(x)
