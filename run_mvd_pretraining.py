@@ -202,6 +202,8 @@ def get_image_teacher_model(args):
         device = "cuda" if torch.cuda.is_available() else "cpu"
         model, _, preprocess = create_model_and_transforms(model_name, pretrained, force_custom_clip=True)
 
+        model.visual()
+
 
 
         #

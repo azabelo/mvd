@@ -608,6 +608,9 @@ class VisionTransformer(nn.Module):
     def no_weight_decay(self):
         return {'positional_embedding', 'class_embedding'}
 
+
+# here is the method that you should modify
+
     def forward(self, x: torch.Tensor, return_all_features: bool=False):
         x = self.conv1(x)  # shape = [*, width, grid, grid]
         x = x.reshape(x.shape[0], x.shape[1], -1)  # shape = [*, width, grid ** 2]
@@ -624,6 +627,8 @@ class VisionTransformer(nn.Module):
         x = x.permute(1, 0, 2)  # NLD -> LND
         x = self.transformer(x)
         x = x.permute(1, 0, 2)  # LND -> NLD
+
+        return_all_features = True
 
         if not return_all_features:
             if self.global_average_pool:
