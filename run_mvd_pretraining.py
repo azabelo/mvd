@@ -183,7 +183,6 @@ def get_args():
 def get_image_teacher_model(args):
     print(args.use_clip)
     if args.use_clip:
-
         args.image_teacher_model = 'vit_base_patch16_224'
 
         # print("using clip")
