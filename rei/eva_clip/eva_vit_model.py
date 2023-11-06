@@ -525,7 +525,8 @@ class EVAVisionTransformer(nn.Module):
             else:
                 # return x[:, 0]
                 print("returning here")
-                return x[8:, 0]
+                return x[:, 0]
+        print("returning here 2")
         return x
 
     def forward(self, x, return_all_features=False):
