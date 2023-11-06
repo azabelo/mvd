@@ -373,6 +373,8 @@ class EVAVisionTransformer(nn.Module):
                  use_mean_pooling=True, init_scale=0.001, grad_checkpointing=False, xattn=False, postnorm=False,
                  pt_hw_seq_len=16, intp_freq=False, naiveswiglu=False, subln=False):
 
+        embed_dim = 512
+
         super().__init__()
         self.image_size = img_size
         self.num_classes = num_classes
