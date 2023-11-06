@@ -30,6 +30,7 @@ DATA_ROOT='hmdb51_mp4'
 #video_teacher.pth
 #vit_b_k710_dl_from_giant.pth
 
+#        --checkpoint_path OUTPUT/mvd_vit_base_with_vit_base_teacher_HMDB51/checkpoint-399.pth
 
 
 OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
@@ -54,4 +55,3 @@ OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         --num_frames 16 --sampling_rate ${SAMPLING_RATE} \
         --lr ${LEARNING_RATE} --min_lr 1e-4 --drop_path 0.1 --warmup_epochs ${WARMUP} --epochs ${EPOCHS} \
         --use_clip ${USE_CLIP} --use_cls_token --use_checkpoint --auto_resume \
-        --checkpoint_path OUTPUT/mvd_vit_base_with_vit_base_teacher_HMDB51/checkpoint-399.pth
