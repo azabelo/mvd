@@ -282,8 +282,8 @@ def get_model(args):
         tubelet_size=args.tubelet_size,
     )
     if args.use_checkpoint:
-        state_dict = torch.load_state_dict(args.checkpoint_path, args.use_ema)['model']
-        model.load_state_dict(state_dict)
+        weights = torch.load(args.checkpoint_path, map_location='cpu')['model']
+        utils.load_state_dict(model, weights)
 
     return model
 
