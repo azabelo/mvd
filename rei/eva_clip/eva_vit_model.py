@@ -523,7 +523,7 @@ class EVAVisionTransformer(nn.Module):
             if self.fc_norm is not None:
                 return self.fc_norm(x.mean(1))
             else:
-                return x[:, 0]
+                return x[8:, 0]
         return x
 
     def forward(self, x, return_all_features=False):
