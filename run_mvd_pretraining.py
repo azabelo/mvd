@@ -187,20 +187,20 @@ def get_image_teacher_model(args):
         args.image_teacher_model = 'vit_base_patch16_224'
 
 
-        # args.image_teacher_model_ckpt_path = 'clip_model.pth'
-        # print("using clip")
-        # device = "cuda" if torch.cuda.is_available() else "cpu"
-        # model, preprocess = clip.load("ViT-B/16", device=device)
+        args.image_teacher_model_ckpt_path = 'clip_model.pth'
+        print("using clip")
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        model, preprocess = clip.load("ViT-B/16", device=device)
 
         # print("using slip")
         #args.image_teacher_model_ckpt_path = 'SLIP'
 
-        print("using EVA-clip")
-        args.image_teacher_model_ckpt_path = 'EVA-CLIP.pt'
-        pretrained = 'EVA-CLIP.pt'
-        model_name = "EVA02-CLIP-B-16"
-        device = "cuda" if torch.cuda.is_available() else "cpu"
-        model, _, preprocess = create_model_and_transforms(model_name, pretrained, force_custom_clip=True)
+        # print("using EVA-clip")
+        # args.image_teacher_model_ckpt_path = 'EVA-CLIP.pt'
+        # pretrained = 'EVA-CLIP.pt'
+        # model_name = "EVA02-CLIP-B-16"
+        # device = "cuda" if torch.cuda.is_available() else "cpu"
+        # model, _, preprocess = create_model_and_transforms(model_name, pretrained, force_custom_clip=True)
 
 
 

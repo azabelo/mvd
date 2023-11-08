@@ -55,3 +55,4 @@ OMP_NUM_THREADS=1 python3 -m torch.distributed.launch --nproc_per_node=${GPUS} \
         --num_frames 16 --sampling_rate ${SAMPLING_RATE} \
         --lr ${LEARNING_RATE} --min_lr 1e-4 --drop_path 0.1 --warmup_epochs ${WARMUP} --epochs ${EPOCHS} \
         --use_clip ${USE_CLIP} --use_cls_token --auto_resume \
+        --use_checkpoint   --checkpoint_path  CLIP_clean_run_799
