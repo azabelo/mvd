@@ -455,7 +455,7 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
         new_dict = OrderedDict()
         if args.video_teacher_model_ckpt_path == 'video_teacher.pth':
             for key in all_keys:
-                print(key)
+                print("video_teacher: " , key)
                 if key.startswith('backbone.'):
                     new_dict[key[9:]] = checkpoint_model[key]
                 elif 'pos_embed' in key:
@@ -472,6 +472,7 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
                     new_dict["encoder." + key] = checkpoint_model[key]
         elif args.video_teacher_model_ckpt_path == 'vit_b_k710_dl_from_giant.pth':
             for key in all_keys:
+                print("v2 teacher: ", key)
                 if key == 'fc_norm.weight':
                     new_dict["encoder.norm.weight"] = checkpoint_model[key]
                     continue
@@ -489,6 +490,9 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
         checkpoint_model = new_dict
 
         utils.load_state_dict(video_teacher_model, checkpoint_model, prefix=args.model_prefix)
+        for param in video_teacher_model.parameters():
+            print("turned off grad for ", param)
+            param.requires_grad_(False)
 
     video_teacher_model.to(device)
 
