@@ -299,7 +299,7 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
         run_name = "MAE " + run_name
     print(run_name)
 
-    wandb.init(project='MVD+CLIP pretraining sweep with kNN', name=run_name)
+    wandb.init(project='videomae_v2 testing', name=run_name)
     # Log the arguments to wandb
     wandb.config.update(args)
 
@@ -491,7 +491,6 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
 
         utils.load_state_dict(video_teacher_model, checkpoint_model, prefix=args.model_prefix)
         for param in video_teacher_model.parameters():
-            print("turned off grad for ", param)
             param.requires_grad_(False)
 
     video_teacher_model.to(device)
