@@ -299,7 +299,8 @@ warmup: {args.warmup_epochs}, sapling: {args.sampling_rate}"
         run_name = "MAE " + run_name
     print(run_name)
 
-    wandb.init(project='videomae_v2 testing', name=run_name)
+    #videomae_v2 testing
+    wandb.init(project='MVD + CLIP pretraining sweep with kNN', name=run_name)
     # Log the arguments to wandb
     wandb.config.update(args)
 
