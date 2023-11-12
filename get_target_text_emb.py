@@ -82,12 +82,6 @@ def get_text_embs():
     return text_features
 
 def get_4799():
-    from timm.models import create_model
-    from collections import OrderedDict
-    import utils
-    import modeling_student
-    import modeling_teacher
-    import modeling_video_teacher
 
     video_teacher_model_ckpt_path = 'checkpoint-4799.pth'
     model_key = "model|module"
