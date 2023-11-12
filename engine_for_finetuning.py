@@ -61,7 +61,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
 
                 probs = logits_per_video.softmax(dim=-1).cpu().numpy()
                 for i in range(len(prompts)):
-                    print(prompts[i], probs[i])
+                    print(prompts[i], probs[0][i])
             return
 
     model.train(True)
