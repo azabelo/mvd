@@ -49,7 +49,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
 
             visual_features = clip_model.visual.ln_post(visual_features[:, 0, :])
             if clip_model.visual.proj is not None:
-                visual_features = visual_features @ clip_model.visual.proj
+                visual_features = visual_features.half() @ clip_model.visual.proj
             visual_features = visual_features / visual_features.norm(dim=1, keepdim=True)
 
             # cosine similarity as logits
