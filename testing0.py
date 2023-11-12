@@ -63,38 +63,38 @@ print(prompts)
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model, preprocess = clip.load("ViT-B/16", device=device)
 
-image = preprocess(Image.open("Unknown.jpeg")).unsqueeze(0).to(device)
-print(image.shape)
-text = clip.tokenize(["car", "a red car", "rowing"]).to(device)
-
-with torch.no_grad():
-    image_features = model.encode_image(image)
-    print(image_features.shape)
-    # here it is the same as mvd outputs
-
-    text_features = model.encode_text(text)
-    print(text_features.shape)
-    image_features = model.visual.ln_post(image_features[:, 0, :])
-    print(image_features.shape)
-    if  model.visual.proj is not None:
-        image_features = image_features @  model.visual.proj
-    print(image_features.shape)
-    # normalized features
-    image_features = image_features / image_features.norm(dim=1, keepdim=True)
-    text_features = text_features / text_features.norm(dim=1, keepdim=True)
-
-    # cosine similarity as logits
-    logit_scale = model.logit_scale.exp()
-    logits_per_image = logit_scale * image_features @ text_features.t()
-    logits_per_text = logits_per_image.t()
-
-    print(logits_per_image.shape)
-    print(logits_per_text.shape)
-
-    print(logits_per_image)
-    probs = logits_per_image.softmax(dim=-1).cpu().numpy()
-
-print("Label probs:", probs)
+# image = preprocess(Image.open("Unknown.jpeg")).unsqueeze(0).to(device)
+# print(image.shape)
+# text = clip.tokenize(["car", "a red car", "rowing"]).to(device)
+#
+# with torch.no_grad():
+#     image_features = model.encode_image(image)
+#     print(image_features.shape)
+#     # here it is the same as mvd outputs
+#
+#     text_features = model.encode_text(text)
+#     print(text_features.shape)
+#     image_features = model.visual.ln_post(image_features[:, 0, :])
+#     print(image_features.shape)
+#     if  model.visual.proj is not None:
+#         image_features = image_features @  model.visual.proj
+#     print(image_features.shape)
+#     # normalized features
+#     image_features = image_features / image_features.norm(dim=1, keepdim=True)
+#     text_features = text_features / text_features.norm(dim=1, keepdim=True)
+#
+#     # cosine similarity as logits
+#     logit_scale = model.logit_scale.exp()
+#     logits_per_image = logit_scale * image_features @ text_features.t()
+#     logits_per_text = logits_per_image.t()
+#
+#     print(logits_per_image.shape)
+#     print(logits_per_text.shape)
+#
+#     print(logits_per_image)
+#     probs = logits_per_image.softmax(dim=-1).cpu().numpy()
+#
+# print("Label probs:", probs)
 
 from timm.models import create_model
 from collections import OrderedDict
