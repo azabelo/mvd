@@ -174,5 +174,6 @@ if video_teacher_model_ckpt_path:
 
 video_teacher_model.to(device)
 
-prompts_encoded = clip.tokenize(prompts).to(device)
-print(prompts.shape)
+prompts_tokenized = clip.tokenize(prompts).to(device)
+with torch.no_grad():
+    text_features = model.encode_text(prompts_tokenized)
