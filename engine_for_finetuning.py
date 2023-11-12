@@ -43,7 +43,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
             for data_iter_step, (samples, targets, _, _) in enumerate(data_loader):
                 samples = samples.to(device, non_blocking=True)
                 targets = targets.to(device, non_blocking=True)
-                print("video: ", prompts[samples])
+                print("video: ", targets)
 
                 visual_features = vision_encoder(samples)
                 print("zero shot: ", visual_features.shape)
