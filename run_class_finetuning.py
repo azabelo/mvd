@@ -834,7 +834,6 @@ def get_text_embs():
 ]
 
     class_names_str = "brush_hair clap draw_sword fall_floor handstand kick pick push run shoot_gun smoke sword turn cartwheel climb dribble fencing hit kick_ball pour pushup shake_hands sit somersault sword_exercise walk catch climb_stairs drink flic_flac hug kiss pullup ride_bike shoot_ball situp stand talk wave chew dive eat golf jump laugh punch ride_horse shoot_bow smile swing_baseball throw"
-    class_names_str = "brush_hair clap draw_sword fall_floor"
 
     # Convert the string to a list by splitting on spaces and then removing underscores
     class_names = class_names_str.split()
