@@ -173,3 +173,6 @@ if video_teacher_model_ckpt_path:
         param.requires_grad_(False)
 
 video_teacher_model.to(device)
+
+prompts_encoded = clip.tokenize(prompts).to(device)
+print(prompts.shape)
