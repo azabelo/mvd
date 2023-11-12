@@ -843,7 +843,7 @@ def get_text_embs():
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model, preprocess = clip.load("ViT-B/16", device=device)
 
-    text_embs = clip.tokenize(["car", "a red car", "rowing"]).to(device)
+    text_embs = clip.tokenize(prompts).to(device)
     text_features = model.encode_text(text_embs)
     text_features = text_features / text_features.norm(dim=1, keepdim=True)
 
