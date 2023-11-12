@@ -5,7 +5,7 @@ import modeling_student
 import modeling_teacher
 import modeling_video_teacher
 from collections import OrderedDict
-import utils
+from utils import load_state_dict
 
 def get_text_embs():
     templates = [
@@ -147,7 +147,7 @@ def get_4799():
 
         checkpoint_model = new_dict
 
-        torch.utils.load_state_dict(video_teacher_model, checkpoint_model, prefix='')
+        load_state_dict(video_teacher_model, checkpoint_model, prefix='')
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     video_teacher_model.to(device)
