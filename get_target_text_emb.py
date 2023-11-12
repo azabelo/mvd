@@ -147,7 +147,7 @@ def get_4799():
 
         checkpoint_model = new_dict
 
-        load_state_dict(video_teacher_model, checkpoint_model, prefix='')
+        utils.load_state_dict(video_teacher_model, checkpoint_model, prefix='')
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     video_teacher_model.to(device)
