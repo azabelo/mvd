@@ -100,6 +100,9 @@ model, preprocess = clip.load("ViT-B/16", device=device)
 from timm.models import create_model
 from collections import OrderedDict
 import utils
+import modeling_student
+import modeling_teacher
+import modeling_video_teacher
 
 video_teacher_model_ckpt_path = ""
 model_key = "model|module"
