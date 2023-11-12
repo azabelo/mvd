@@ -40,6 +40,9 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
 
     if zero_shot_blyat:
         for data_iter_step, (samples, targets, _, _) in enumerate(data_loader):
+            samples = samples.to(device, non_blocking=True)
+            targets = targets.to(device, non_blocking=True)
+
             visual_features = vision_encoder(samples)
             print("zero shot: ", visual_features.shape)
             print("zero shot: ", text_features.shape)
