@@ -168,7 +168,7 @@ if video_teacher_model_ckpt_path:
 
     checkpoint_model = new_dict
 
-    utils.load_state_dict(video_teacher_model, checkpoint_model, prefix=args.model_prefix)
+    utils.load_state_dict(video_teacher_model, checkpoint_model, prefix='')
     for param in video_teacher_model.parameters():
         param.requires_grad_(False)
 
