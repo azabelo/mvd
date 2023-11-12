@@ -39,27 +39,28 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
     ######## for zero shot   #######
 
     if zero_shot_blyat:
-        for data_iter_step, (samples, targets, _, _) in enumerate(data_loader):
-            samples = samples.to(device, non_blocking=True)
-            targets = targets.to(device, non_blocking=True)
+        with torch.no_grad():
+            for data_iter_step, (samples, targets, _, _) in enumerate(data_loader):
+                samples = samples.to(device, non_blocking=True)
+                targets = targets.to(device, non_blocking=True)
 
-            visual_features = vision_encoder(samples)
-            print("zero shot: ", visual_features.shape)
-            print("zero shot: ", text_features.shape)
+                visual_features = vision_encoder(samples)
+                print("zero shot: ", visual_features.shape)
+                print("zero shot: ", text_features.shape)
 
-            visual_features = clip_model.visual.ln_post(visual_features[:, 0, :])
-            if clip_model.visual.proj is not None:
-                visual_features = visual_features.half() @ clip_model.visual.proj
-            visual_features = visual_features / visual_features.norm(dim=1, keepdim=True)
+                visual_features = clip_model.visual.ln_post(visual_features[:, 0, :])
+                if clip_model.visual.proj is not None:
+                    visual_features = visual_features.half() @ clip_model.visual.proj
+                visual_features = visual_features / visual_features.norm(dim=1, keepdim=True)
 
-            # cosine similarity as logits
-            logit_scale = clip_model.logit_scale.exp()
-            logits_per_video = logit_scale * visual_features @ text_features.t()
-            logits_per_text = logits_per_video.t()
+                # cosine similarity as logits
+                logit_scale = clip_model.logit_scale.exp()
+                logits_per_video = logit_scale * visual_features @ text_features.t()
+                logits_per_text = logits_per_video.t()
 
-            probs = logits_per_video.softmax(dim=-1).cpu().numpy()
-            print(probs)
-        return
+                probs = logits_per_video.softmax(dim=-1).cpu().numpy()
+                print(probs)
+            return
 
     model.train(True)
     metric_logger = utils.MetricLogger(delimiter="  ")
