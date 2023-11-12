@@ -96,6 +96,7 @@ model, preprocess = clip.load("ViT-B/16", device=device)
 #
 # print("Label probs:", probs)
 
+
 from timm.models import create_model
 from collections import OrderedDict
 import utils
