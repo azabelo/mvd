@@ -8,7 +8,6 @@ from collections import OrderedDict
 import utils
 
 def get_text_embs():
-
     templates = [
         'a photo of a person {}.',
         'a video of a person {}.',
@@ -148,9 +147,7 @@ def get_4799():
 
         checkpoint_model = new_dict
 
-        utils.load_state_dict(video_teacher_model, checkpoint_model, prefix='')
-        for param in video_teacher_model.parameters():
-            param.requires_grad_(False)
+        torch.utils.load_state_dict(video_teacher_model, checkpoint_model, prefix='')
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     video_teacher_model.to(device)
