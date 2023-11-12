@@ -675,7 +675,8 @@ def main(args, ds_init):
 
     if zero_shot_blyat:
         clip_model, preprocess = clip.load("ViT-B/16", device=device)
-        vision_encoder = get_4799()
+        #vision_encoder = get_4799()
+        vision_encoder = get4799student()
         text_features, prompts = get_text_embs()
 
 
@@ -928,6 +929,30 @@ def get_4799():
     device = "cuda" if torch.cuda.is_available() else "cpu"
     video_teacher_model.to(device)
     return video_teacher_model
+
+def get4799student():
+    print(f"Creating model: 4799")
+    model = create_model(
+        'pretrain_masked_video_student_base_patch16_224',
+        pretrained=False,
+        drop_path_rate=0.1,
+        drop_block_rate=None,
+        decoder_depth=2,
+        use_cls_token=True,
+        num_frames=16,
+        target_feature_dim=768,
+        target_video_feature_dim=768,
+        feat_decoder_embed_dim=None,
+        feat_decoder_num_heads=None,
+        # use_checkpoint=args.use_checkpoint,
+        # checkpoint_path=args.checkpoint_path,
+        tubelet_size=2,
+    )
+
+    weights = torch.load('checkpoint-4799.pth', map_location='cpu')['model']
+    utils.load_state_dict(model, weights)
+
+    return model
 
 if __name__ == '__main__':
     opts, ds_init = get_args()

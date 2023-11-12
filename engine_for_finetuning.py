@@ -45,7 +45,12 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                 targets = targets.to(device, non_blocking=True)
                 print("video: ", targets)
 
-                visual_features = vision_encoder(samples)
+                #visual_features = vision_encoder(samples)
+
+                # make an empty tensor of False values with shape [bs, 1568]
+                empty_mask = torch.zeros((samples.shape[0], 1568), dtype=torch.bool)
+                visual_features, _ = vision_encoder(samples,empty_mask.cuda())
+
                 print("zero shot: ", visual_features.shape)
                 print("zero shot: ", text_features.shape)
 
