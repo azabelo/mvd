@@ -834,14 +834,16 @@ def get_text_embs():
 ]
 
     class_names_str = "brush_hair clap draw_sword fall_floor handstand kick pick push run shoot_gun smoke sword turn cartwheel climb dribble fencing hit kick_ball pour pushup shake_hands sit somersault sword_exercise walk catch climb_stairs drink flic_flac hug kiss pullup ride_bike shoot_ball situp stand talk wave chew dive eat golf jump laugh punch ride_horse shoot_bow smile swing_baseball throw"
+    action_str = "brushing_hair claping drawing_a_sword falling_to_the_floor doing_a_handstand kicking picking pushing running shooting_a_gun smoking using_a_sword turning doing_a_cartwheel climbing dribbling fencing hitting_something kicking_a_ball pouring doing_pushups shaking_hands sitting doing_a_somersault doing_sword_exercises walking catching climbing_stairs drinking flic_flacing hugging kissing doing_pullups riding_a_bike shooting_a_ball doing_situps standing talking waving chewing diving eating golfing jumping laughing punching riding_a_horse shooting_a_bow smiling swinging_a_baseball_bat throwing"
 
     # Convert the string to a list by splitting on spaces and then removing underscores
-    class_names = class_names_str.split()
+    class_names = action_str.split()
     # Sort the list alphabetically
     class_names.sort()
 
     prompts = []
     for name in class_names:
+        name = name.replace('_', ' ')
         for template in templates:
             prompts.append(template.format(name))
 
