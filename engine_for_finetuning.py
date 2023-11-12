@@ -47,17 +47,18 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
             print("zero shot: ", visual_features.shape)
             print("zero shot: ", text_features.shape)
 
-            # visual_features = clip_model.visual.ln_post(visual_features[:, 0, :])
-            # if clip_model.visual.proj is not None:
-            #     visual_features = visual_features @ clip_model.visual.proj
-            # visual_features = visual_features / visual_features.norm(dim=1, keepdim=True)
-            #
-            # # cosine similarity as logits
-            # logit_scale = clip_model.logit_scale.exp()
-            # logits_per_video = logit_scale * visual_features @ text_features.t()
-            # logits_per_text = logits_per_video.t()
-            #
-            # probs = logits_per_video.softmax(dim=-1).cpu().numpy()
+            visual_features = clip_model.visual.ln_post(visual_features[:, 0, :])
+            if clip_model.visual.proj is not None:
+                visual_features = visual_features @ clip_model.visual.proj
+            visual_features = visual_features / visual_features.norm(dim=1, keepdim=True)
+
+            # cosine similarity as logits
+            logit_scale = clip_model.logit_scale.exp()
+            logits_per_video = logit_scale * visual_features @ text_features.t()
+            logits_per_text = logits_per_video.t()
+
+            probs = logits_per_video.softmax(dim=-1).cpu().numpy()
+            print(probs)
         return
 
     model.train(True)
