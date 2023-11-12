@@ -952,6 +952,9 @@ def get4799student():
     weights = torch.load('checkpoint-4799.pth', map_location='cpu')['model']
     utils.load_state_dict(model, weights)
 
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    model.to(device)
+
     return model
 
 if __name__ == '__main__':
