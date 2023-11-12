@@ -59,6 +59,12 @@ def get_text_embs():
         'a demonstration of the person practicing {}.',
     ]
 
+    templates = [
+        'a photo of a person {}.',
+        'a video of a person {}.',
+        'a example of a person {}.',
+        'a demonstration of a person {}.',]
+
     class_names_str = "brush_hair clap draw_sword fall_floor handstand kick pick push run shoot_gun smoke sword turn cartwheel climb dribble fencing hit kick_ball pour pushup shake_hands sit somersault sword_exercise walk catch climb_stairs drink flic_flac hug kiss pullup ride_bike shoot_ball situp stand talk wave chew dive eat golf jump laugh punch ride_horse shoot_bow smile swing_baseball throw"
 
     class_names_str = "brush_hair clap draw_sword fall_floor"
