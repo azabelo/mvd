@@ -675,8 +675,8 @@ def main(args, ds_init):
 
     if zero_shot_blyat:
         clip_model, preprocess = clip.load("ViT-B/16", device=device)
-        vision_encoder = get_target_text_emb.get_4799()
-        text_features = get_target_text_emb.get_text_features()
+        vision_encoder = get_4799()
+        text_features = get_text_embs()
 
 
 
