@@ -67,15 +67,15 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
         print(len(targets))
         print(type(targets[0]))
         print(targets)
-
+        targets = targets.to(device, non_blocking=True)
 
         ######## for zero shot   #######
 
         zero_shot_blyat = True
         if zero_shot_blyat:
             visual_features = vision_encoder(samples)
-            print(visual_features.shape)
-            print(text_features.shape)
+            print("zero shot: " , visual_features.shape)
+            print("zero shot: " , text_features.shape)
 
             # visual_features = clip_model.visual.ln_post(visual_features[:, 0, :])
             # if clip_model.visual.proj is not None:
@@ -97,8 +97,6 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
 
 
 
-
-        targets = targets.to(device, non_blocking=True)
 
         if mixup_fn is not None:
             samples, targets = mixup_fn(samples, targets)
