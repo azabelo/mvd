@@ -177,3 +177,4 @@ video_teacher_model.to(device)
 prompts_tokenized = clip.tokenize(prompts).to(device)
 with torch.no_grad():
     text_features = model.encode_text(prompts_tokenized)
+    print(text_features.shape)
