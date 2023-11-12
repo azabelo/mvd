@@ -35,7 +35,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                     model_ema: Optional[ModelEma] = None, mixup_fn=None, log_writer=None,
                     start_steps=None, lr_schedule_values=None, wd_schedule_values=None,
                     num_training_steps_per_epoch=None, update_freq=None,
-                    zero_shot_blyat=False, clip_model=None, vision_encoder=None, text_features=None,):
+                    zero_shot_blyat=False, clip_model=None, vision_encoder=None, text_features=None, prompts=None):
     ######## for zero shot   #######
 
     if zero_shot_blyat:
@@ -43,6 +43,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
             for data_iter_step, (samples, targets, _, _) in enumerate(data_loader):
                 samples = samples.to(device, non_blocking=True)
                 targets = targets.to(device, non_blocking=True)
+                print("samples: ", samples)
 
                 visual_features = vision_encoder(samples)
                 print("zero shot: ", visual_features.shape)
@@ -59,7 +60,8 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                 logits_per_text = logits_per_video.t()
 
                 probs = logits_per_video.softmax(dim=-1).cpu().numpy()
-                print(probs)
+                for i in range(len(prompts)):
+                    print(prompts[i], probs[i])
             return
 
     model.train(True)

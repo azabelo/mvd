@@ -676,7 +676,7 @@ def main(args, ds_init):
     if zero_shot_blyat:
         clip_model, preprocess = clip.load("ViT-B/16", device=device)
         vision_encoder = get_4799()
-        text_features = get_text_embs()
+        text_features, prompts = get_text_embs()
 
 
 
@@ -709,7 +709,7 @@ def main(args, ds_init):
                 lr_schedule_values=lr_schedule_values, wd_schedule_values=wd_schedule_values,
                 num_training_steps_per_epoch=num_training_steps_per_epoch, update_freq=args.update_freq,
                 zero_shot_blyat=zero_shot_blyat,
-                clip_model=clip_model, vision_encoder=vision_encoder, text_features=text_features,
+                clip_model=clip_model, vision_encoder=vision_encoder, text_features=text_features, prompts=prompts,
             )
             continue
 
@@ -855,7 +855,7 @@ def get_text_embs():
     text_features = model.encode_text(text_embs)
     text_features = text_features / text_features.norm(dim=1, keepdim=True)
 
-    return text_features
+    return text_features, prompts
 
 def get_4799():
 
