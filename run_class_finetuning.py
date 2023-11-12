@@ -675,12 +675,29 @@ def main(args, ds_init):
         #     print(f'Max accuracy: {max_accuracy:.2f}%')
 
 
+    ######### for zero shot ############
+
+
+        zero_shot_blyat = True
+
+        clip_model = None
+        vision_encoder = None
+        text_features = None
+
+        if zero_shot_blyat:
+            import clip
+            import get_target_text_emb
+            clip_model, preprocess = clip.load("ViT-B/16", device=device)
+            vision_encoder = get_target_text_emb.get_4799()
+            text_features = get_target_text_emb.get_text_features()
+
         train_stats = train_one_epoch(
             model, criterion, data_loader_train, optimizer,
             device, epoch, loss_scaler, args.clip_grad, model_ema, mixup_fn,
             log_writer=log_writer, start_steps=epoch * num_training_steps_per_epoch,
             lr_schedule_values=lr_schedule_values, wd_schedule_values=wd_schedule_values,
-            num_training_steps_per_epoch=num_training_steps_per_epoch, update_freq=args.update_freq,
+            num_training_steps_per_epoch=num_training_steps_per_epoch, update_freq=args.update_freq, zero_shot_blyat=zero_shot_blyat,
+            clip_model=clip_model, vision_encoder=vision_encoder, text_features=text_features,
         )
         if args.output_dir and args.save_ckpt:
             if (epoch + 1) % args.save_ckpt_freq == 0 or epoch + 1 == args.epochs:

@@ -34,7 +34,8 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                     device: torch.device, epoch: int, loss_scaler, max_norm: float = 0,
                     model_ema: Optional[ModelEma] = None, mixup_fn=None, log_writer=None,
                     start_steps=None, lr_schedule_values=None, wd_schedule_values=None,
-                    num_training_steps_per_epoch=None, update_freq=None):
+                    num_training_steps_per_epoch=None, update_freq=None,
+                    zero_shot_blyat=False, clip_model=None, vision_encoder=None, text_features=None,):
     model.train(True)
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter('lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
@@ -66,6 +67,37 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
         print(len(targets))
         print(type(targets[0]))
         print(targets)
+
+
+        ######## for zero shot   #######
+
+        zero_shot_blyat = True
+        if zero_shot_blyat:
+            visual_features = vision_encoder(samples)
+            print(visual_features.shape)
+            print(text_features.shape)
+
+            # visual_features = clip_model.visual.ln_post(visual_features[:, 0, :])
+            # if clip_model.visual.proj is not None:
+            #     visual_features = visual_features @ clip_model.visual.proj
+            # visual_features = visual_features / visual_features.norm(dim=1, keepdim=True)
+            #
+            # # cosine similarity as logits
+            # logit_scale = clip_model.logit_scale.exp()
+            # logits_per_video = logit_scale * visual_features @ text_features.t()
+            # logits_per_text = logits_per_video.t()
+            #
+            # probs = logits_per_video.softmax(dim=-1).cpu().numpy()
+
+
+
+            continue
+
+
+
+
+
+
         targets = targets.to(device, non_blocking=True)
 
         if mixup_fn is not None:

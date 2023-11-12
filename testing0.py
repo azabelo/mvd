@@ -63,7 +63,7 @@ print(prompts)
 device = "cuda" if torch.cuda.is_available() else "cpu"
 model, preprocess = clip.load("ViT-B/16", device=device)
 
-# image = preprocess(Image.open("Unknown.jpeg")).unsqueeze(0).to(device)
+#image = preprocess(Image.open("Unknown.jpeg")).unsqueeze(0).to(device)
 # print(image.shape)
 # text = clip.tokenize(["car", "a red car", "rowing"]).to(device)
 #
@@ -79,6 +79,7 @@ model, preprocess = clip.load("ViT-B/16", device=device)
 #     if  model.visual.proj is not None:
 #         image_features = image_features @  model.visual.proj
 #     print(image_features.shape)
+
 #     # normalized features
 #     image_features = image_features / image_features.norm(dim=1, keepdim=True)
 #     text_features = text_features / text_features.norm(dim=1, keepdim=True)
