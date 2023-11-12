@@ -104,7 +104,7 @@ import modeling_student
 import modeling_teacher
 import modeling_video_teacher
 
-video_teacher_model_ckpt_path = ""
+video_teacher_model_ckpt_path = 'checkpoint-4799.pth'
 model_key = "model|module"
 
 video_teacher_model = create_model('pretrain_videomae_teacher_base_patch16_224', pretrained=False, img_size=224, drop_path_rate=0)
