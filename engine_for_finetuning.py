@@ -36,6 +36,27 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                     start_steps=None, lr_schedule_values=None, wd_schedule_values=None,
                     num_training_steps_per_epoch=None, update_freq=None,
                     zero_shot_blyat=False, clip_model=None, vision_encoder=None, text_features=None,):
+    ######## for zero shot   #######
+
+    if zero_shot_blyat:
+        for data_iter_step, (samples, targets, _, _) in enumerate(data_loader):
+            visual_features = vision_encoder(samples)
+            print("zero shot: ", visual_features.shape)
+            print("zero shot: ", text_features.shape)
+
+            # visual_features = clip_model.visual.ln_post(visual_features[:, 0, :])
+            # if clip_model.visual.proj is not None:
+            #     visual_features = visual_features @ clip_model.visual.proj
+            # visual_features = visual_features / visual_features.norm(dim=1, keepdim=True)
+            #
+            # # cosine similarity as logits
+            # logit_scale = clip_model.logit_scale.exp()
+            # logits_per_video = logit_scale * visual_features @ text_features.t()
+            # logits_per_text = logits_per_video.t()
+            #
+            # probs = logits_per_video.softmax(dim=-1).cpu().numpy()
+        return
+
     model.train(True)
     metric_logger = utils.MetricLogger(delimiter="  ")
     metric_logger.add_meter('lr', utils.SmoothedValue(window_size=1, fmt='{value:.6f}'))
@@ -68,34 +89,6 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
         print(type(targets[0]))
         print(targets)
         targets = targets.to(device, non_blocking=True)
-
-        ######## for zero shot   #######
-
-        zero_shot_blyat = True
-        if zero_shot_blyat:
-            visual_features = vision_encoder(samples)
-            print("zero shot: " , visual_features.shape)
-            print("zero shot: " , text_features.shape)
-
-            # visual_features = clip_model.visual.ln_post(visual_features[:, 0, :])
-            # if clip_model.visual.proj is not None:
-            #     visual_features = visual_features @ clip_model.visual.proj
-            # visual_features = visual_features / visual_features.norm(dim=1, keepdim=True)
-            #
-            # # cosine similarity as logits
-            # logit_scale = clip_model.logit_scale.exp()
-            # logits_per_video = logit_scale * visual_features @ text_features.t()
-            # logits_per_text = logits_per_video.t()
-            #
-            # probs = logits_per_video.softmax(dim=-1).cpu().numpy()
-
-
-
-            continue
-
-
-
-
 
 
         if mixup_fn is not None:
