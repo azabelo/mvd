@@ -721,7 +721,7 @@ def main(args, ds_init):
             log_writer=log_writer, start_steps=epoch * num_training_steps_per_epoch,
             lr_schedule_values=lr_schedule_values, wd_schedule_values=wd_schedule_values,
             num_training_steps_per_epoch=num_training_steps_per_epoch, update_freq=args.update_freq, zero_shot_blyat=zero_shot_blyat,
-            clip_model=clip_model, vision_encoder=vision_encoder, text_features=text_features,
+            clip_model=clip_model, vision_encoder=vision_encoder, text_features=text_features, args=args
         )
         if args.output_dir and args.save_ckpt:
             if (epoch + 1) % args.save_ckpt_freq == 0 or epoch + 1 == args.epochs:
