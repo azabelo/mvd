@@ -341,6 +341,8 @@ def main(args, ds_init):
             fc_drop_rate=args.fc_drop_rate,
             use_checkpoint=args.use_checkpoint,
         )
+        #remove head from knn_copy
+        knn_copy.head = None
         device = torch.device(args.device)
         knn_copy.to(device)
 
