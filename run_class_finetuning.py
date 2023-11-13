@@ -428,33 +428,7 @@ def main(args, ds_init):
         data_loader_test = None
 
 
-######## inital knn for failsafe blyat ##########
 
-    import engine_for_pretraining
-    import copy
-
-    args2 = copy.deepcopy(args)
-    args2.data_set = 'HMDB51'
-    args2.nb_classes = 51
-    args2.data_path = 'finetune_splits'
-    args2.test_num_segment = 8
-    args2.test_num_crop = 1
-    args2.short_side_size = 256
-    args2.batch_size = 8
-    dataset_val2, _ = build_dataset(is_train=False, test_mode=False, args=args2)
-    num_tasks = utils.get_world_size()
-    global_rank = utils.get_rank()
-    sampler_val = torch.utils.data.SequentialSampler(dataset_val)
-    # dont forget that you added shuffle and took something out
-    data_loader_val2 = torch.utils.data.DataLoader(
-        dataset_val2,
-        batch_size=int(args2.batch_size),
-        num_workers=args2.num_workers,
-        pin_memory=args2.pin_mem,
-        drop_last=False,
-        shuffle=True
-    )
-    engine_for_pretraining.log_knn_acc(data_loader_val2, model, finetuning=True)
 
 
     mixup_fn = None
@@ -696,6 +670,34 @@ def main(args, ds_init):
     print(f"Start training for {args.epochs} epochs")
     start_time = time.time()
     max_accuracy = 0.0
+
+    ######## inital knn for failsafe blyat ##########
+
+    import engine_for_pretraining
+    import copy
+
+    args2 = copy.deepcopy(args)
+    args2.data_set = 'HMDB51'
+    args2.nb_classes = 51
+    args2.data_path = 'finetune_splits'
+    args2.test_num_segment = 8
+    args2.test_num_crop = 1
+    args2.short_side_size = 256
+    args2.batch_size = 8
+    dataset_val2, _ = build_dataset(is_train=False, test_mode=False, args=args2)
+    num_tasks = utils.get_world_size()
+    global_rank = utils.get_rank()
+    sampler_val = torch.utils.data.SequentialSampler(dataset_val)
+    # dont forget that you added shuffle and took something out
+    data_loader_val2 = torch.utils.data.DataLoader(
+        dataset_val2,
+        batch_size=int(args2.batch_size),
+        num_workers=args2.num_workers,
+        pin_memory=args2.pin_mem,
+        drop_last=False,
+        shuffle=True
+    )
+    engine_for_pretraining.log_knn_acc(data_loader_val2, model, finetuning=True)
 
 
 
