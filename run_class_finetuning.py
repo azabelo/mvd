@@ -432,7 +432,6 @@ def main(args, ds_init):
 
         import engine_for_pretraining
         import copy
-        from datasets import build_dataset
 
         args2 = copy.deepcopy(args)
         args2.data_set = 'HMDB51'
