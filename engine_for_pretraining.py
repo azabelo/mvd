@@ -211,6 +211,7 @@ def log_knn_acc(data_for_knn, model, finetuning=False):
             empty_mask = torch.zeros((videos.shape[0], 1568), dtype=torch.bool)
             cls_tok_knn = None
             if finetuning:
+                # forward features already takes the cls token
                 output_features_video_for_knn = model.forward_features(videos.cuda())
                 cls_tok_knn = output_features_video_for_knn.cuda()
                 print(output_features_video_for_knn.shape)
