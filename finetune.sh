@@ -21,6 +21,7 @@ NUM_SAMPLES="$8"
 USE_CLIP="$9"
 WARMUP="${10}"
 
+
 OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=${GPUS} \
     --master_port ${MASTER_PORT} --nnodes=1 \
     --node_rank=0 --master_addr=localhost \
