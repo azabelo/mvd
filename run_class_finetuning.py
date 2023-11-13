@@ -430,31 +430,8 @@ def main(args, ds_init):
 
 ######## inital knn for failsafe blyat ##########
 
-        import engine_for_pretraining
-        import copy
-
-        args2 = copy.deepcopy(args)
-        args2.data_set = 'HMDB51'
-        args2.nb_classes = 51
-        args2.data_path = 'finetune_splits'
-        args2.test_num_segment = 8
-        args2.test_num_crop = 1
-        args2.short_side_size = 256
-        args2.batch_size = 8
-        dataset_val, _ = build_dataset(is_train=False, test_mode=False, args=args2)
-        num_tasks = utils.get_world_size()
-        global_rank = utils.get_rank()
-        sampler_val = torch.utils.data.SequentialSampler(dataset_val)
-        # dont forget that you added shuffle and took something out
-        data_loader_val = torch.utils.data.DataLoader(
-            dataset_val,
-            batch_size=int(args2.batch_size),
-            num_workers=args2.num_workers,
-            pin_memory=args2.pin_mem,
-            drop_last=False,
-            shuffle=True
-        )
-        engine_for_pretraining.log_knn_acc(data_loader_val, model, finetuning=True)
+    import engine_for_pretraining
+    engine_for_pretraining.log_knn_acc(data_loader_val, model, finetuning=True)
 
 
     mixup_fn = None
