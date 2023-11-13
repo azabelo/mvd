@@ -186,7 +186,7 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
 
     return {k: meter.global_avg for k, meter in metric_logger.meters.items()}
 
-def log_knn_acc(data_for_knn, model):
+def log_knn_acc(data_for_knn, model, finetuning=False):
 
     # lightly knn
     train_videos = torch.empty((0, 768), device='cuda')
@@ -209,7 +209,11 @@ def log_knn_acc(data_for_knn, model):
             videos, labels, _ = batch
             # make an empty tensor of False values with shape [bs, 1568]
             empty_mask = torch.zeros((videos.shape[0], 1568), dtype=torch.bool)
-            output_features_for_knn, output_features_video_for_knn = model(videos.cuda(), empty_mask.cuda())
+            if finetuning:
+                output_features_video_for_knn = model(videos.cuda())
+                print(output_features_video_for_knn.shape)
+            else:
+                output_features_for_knn, output_features_video_for_knn = model(videos.cuda(), empty_mask.cuda())
             # output_features_video_for_knn = output_features_video_for_knn.cpu().numpy()
             cls_tok_knn = output_features_video_for_knn[:, 0, :]
             cls_tok_knn = F.normalize(cls_tok_knn, dim=1)

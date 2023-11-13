@@ -367,7 +367,7 @@ def main(args, ds_init):
             drop_last=False,
             shuffle=True
         )
-        engine_for_pretraining.log_knn_acc(data_loader_val, knn_copy)
+        engine_for_pretraining.log_knn_acc(data_loader_val, knn_copy, finetuning=True)
 
 
 
