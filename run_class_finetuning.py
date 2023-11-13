@@ -441,20 +441,20 @@ def main(args, ds_init):
     args2.test_num_crop = 1
     args2.short_side_size = 256
     args2.batch_size = 8
-    dataset_val, _ = build_dataset(is_train=False, test_mode=False, args=args2)
+    dataset_val2, _ = build_dataset(is_train=False, test_mode=False, args=args2)
     num_tasks = utils.get_world_size()
     global_rank = utils.get_rank()
     sampler_val = torch.utils.data.SequentialSampler(dataset_val)
     # dont forget that you added shuffle and took something out
-    data_loader_val = torch.utils.data.DataLoader(
-        dataset_val,
+    data_loader_val2 = torch.utils.data.DataLoader(
+        dataset_val2,
         batch_size=int(args2.batch_size),
         num_workers=args2.num_workers,
         pin_memory=args2.pin_mem,
         drop_last=False,
         shuffle=True
     )
-    engine_for_pretraining.log_knn_acc(data_loader_val, model, finetuning=True)
+    engine_for_pretraining.log_knn_acc(data_loader_val2, model, finetuning=True)
 
 
     mixup_fn = None
