@@ -39,6 +39,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
     if epoch == 0:
         import engine_for_pretraining
         import copy
+        from datasets import build_dataset
 
         args2 = copy.deepcopy(args)
         args2.data_set = 'HMDB51'
@@ -48,7 +49,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
         args2.test_num_crop = 1
         args2.short_side_size = 256
         args2.batch_size = 8
-        dataset_val, _ = engine_for_pretraining.build_dataset(is_train=False, test_mode=False, args=args2)
+        dataset_val, _ = build_dataset(is_train=False, test_mode=False, args=args2)
         num_tasks = utils.get_world_size()
         global_rank = utils.get_rank()
         sampler_val = torch.utils.data.SequentialSampler(dataset_val)
