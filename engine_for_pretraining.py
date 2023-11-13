@@ -209,15 +209,17 @@ def log_knn_acc(data_for_knn, model, finetuning=False):
             videos, labels, _ = batch
             # make an empty tensor of False values with shape [bs, 1568]
             empty_mask = torch.zeros((videos.shape[0], 1568), dtype=torch.bool)
+            cls_tok_knn = None
             if finetuning:
                 output_features_video_for_knn = model.forward_features(videos.cuda())
+                cls_tok_knn = output_features_video_for_knn.cuda()
                 print(output_features_video_for_knn.shape)
             else:
                 output_features_for_knn, output_features_video_for_knn = model(videos.cuda(), empty_mask.cuda())
             # output_features_video_for_knn = output_features_video_for_knn.cpu().numpy()
-            cls_tok_knn = output_features_video_for_knn[:, 0, :]
-            cls_tok_knn = F.normalize(cls_tok_knn, dim=1)
-            cls_tok_knn = cls_tok_knn.cuda()
+                cls_tok_knn = output_features_video_for_knn[:, 0, :]
+                cls_tok_knn = F.normalize(cls_tok_knn, dim=1)
+                cls_tok_knn = cls_tok_knn.cuda()
             if index > 100:
                 # move to cuda if not already
                 test_labels = test_labels.cuda()
