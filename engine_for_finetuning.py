@@ -39,7 +39,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                     zero_shot_blyat=False, clip_model=None, vision_encoder=None, text_features=None, prompts=None, args=None,data_loader_val2=None):
 
 
-    engine_for_pretraining.log_knn_acc(data_loader_val2, model, finetuning=True)
+    engine_for_pretraining.log_knn_acc(data_loader_val2, model, finetuning=False)
 
 
     ######## for zero shot   #######
