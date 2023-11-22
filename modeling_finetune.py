@@ -407,8 +407,11 @@ class VisionTransformer(nn.Module):
             return x[:, 0]
 
     def forward(self, x):
+        # Check if the input tensor is not of type torch.cuda.HalfTensor
+        if not (torch.is_floating_point(x) and x.dtype == torch.float16):
+            return self.forward_features(x.half())
         x = self.forward_features(x)
-        #  x = self.head(self.fc_dropout(x))
+        x = self.head(self.fc_dropout(x))
         return x
 
 

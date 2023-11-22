@@ -215,7 +215,7 @@ def log_knn_acc(data_for_knn, model, finetuning=False):
             if finetuning:
                 # forward features already takes the cls token
                 # output_features_video_for_knn = model.forward_features(videos.cuda())
-                output_features_video_for_knn = model(videos.half().cuda())
+                output_features_video_for_knn = model(videos.cuda())
                 cls_tok_knn = output_features_video_for_knn.cuda()
                 print(output_features_video_for_knn.shape)
             else:
