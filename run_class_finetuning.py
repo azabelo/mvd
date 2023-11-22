@@ -243,7 +243,7 @@ def main(args, ds_init):
         run_name = "MAE " + run_name
 
         # 'testing zero shot'
-    wandb.init(project='MVD finetuning', name=run_name)
+    wandb.init(project='MVD finetuning test', name=run_name)
     # Log the arguments to wandb
     wandb.config.update(args)
 
