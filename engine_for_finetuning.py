@@ -10,6 +10,7 @@ from scipy.special import softmax
 from einops import rearrange
 from torch.utils.data._utils.collate import default_collate
 import torch.nn.functional as F
+import  engine_for_pretraining
 
 import wandb
 
@@ -35,8 +36,10 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                     model_ema: Optional[ModelEma] = None, mixup_fn=None, log_writer=None,
                     start_steps=None, lr_schedule_values=None, wd_schedule_values=None,
                     num_training_steps_per_epoch=None, update_freq=None,
-                    zero_shot_blyat=False, clip_model=None, vision_encoder=None, text_features=None, prompts=None, args=None):
+                    zero_shot_blyat=False, clip_model=None, vision_encoder=None, text_features=None, prompts=None, args=None,data_loader_val2=None):
 
+
+    engine_for_pretraining.log_knn_acc(data_loader_val2, model, finetuning=True)
 
 
     ######## for zero shot   #######

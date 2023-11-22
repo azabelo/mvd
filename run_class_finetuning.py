@@ -531,8 +531,7 @@ def main(args, ds_init):
         drop_last=False,
         shuffle=True
     )
-    print(type(model))
-    engine_for_pretraining.log_knn_acc(data_loader_val2, model, finetuning=True)
+
 
     # # print(model)
     # # print(type(model))
@@ -759,7 +758,7 @@ def main(args, ds_init):
             log_writer=log_writer, start_steps=epoch * num_training_steps_per_epoch,
             lr_schedule_values=lr_schedule_values, wd_schedule_values=wd_schedule_values,
             num_training_steps_per_epoch=num_training_steps_per_epoch, update_freq=args.update_freq, zero_shot_blyat=zero_shot_blyat,
-            clip_model=clip_model, vision_encoder=vision_encoder, text_features=text_features, args=args
+            clip_model=clip_model, vision_encoder=vision_encoder, text_features=text_features, args=args, data_loader_val2=data_loader_val2,
         )
         if args.output_dir and args.save_ckpt:
             if (epoch + 1) % args.save_ckpt_freq == 0 or epoch + 1 == args.epochs:
