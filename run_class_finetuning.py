@@ -695,6 +695,7 @@ def main(args, ds_init):
         drop_last=False,
         shuffle=True
     )
+    print(type(model))
     engine_for_pretraining.log_knn_acc(data_loader_val2, model, finetuning=True)
 
 

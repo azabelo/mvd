@@ -21,7 +21,6 @@ NUM_SAMPLES="$8"
 USE_CLIP="$9"
 WARMUP="${10}"
 
-#--enable_deepspeed
 
 OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=${GPUS} \
     --master_port ${MASTER_PORT} --nnodes=1 \
@@ -42,7 +41,7 @@ OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=${GPUS} \
     --lr ${LEARNING_RATE} --epochs ${EPOCHS} \
     --dist_eval \
     --use_checkpoint \
-     --warmup_epochs ${WARMUP} \
+    --enable_deepspeed --warmup_epochs ${WARMUP} \
     --use_clip ${USE_CLIP} \
     --use_cls_token
 
