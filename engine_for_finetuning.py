@@ -123,6 +123,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                     model, samples, targets, criterion)
 
         loss_value = loss.item()
+        grad_norm_log = None
 
         if not math.isfinite(loss_value):
             print("Loss is {}, stopping training".format(loss_value))
@@ -148,6 +149,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
             grad_norm = loss_scaler(loss, optimizer, clip_grad=max_norm,
                                     parameters=model.parameters(), create_graph=is_second_order,
                                     update_grad=(data_iter_step + 1) % update_freq == 0)
+            grad_norm_log = grad_norm.item()
             if (data_iter_step + 1) % update_freq == 0:
                 optimizer.zero_grad()
                 if model_ema is not None:
@@ -169,7 +171,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
         for group in optimizer.param_groups:
             min_lr = min(min_lr, group["lr"])
             max_lr = max(max_lr, group["lr"])
-        wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value, "max_lr": max_lr, "min_lr": min_lr, "grad_norm": grad_norm})
+        wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value, "max_lr": max_lr, "min_lr": min_lr, "grad_norm": grad_norm_log})
 
 
         metric_logger.update(lr=max_lr)
