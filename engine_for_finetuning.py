@@ -141,6 +141,7 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                 if model_ema is not None:
                     model_ema.update(model)
             grad_norm = None
+            grad_norm_log = grad_norm.item()
             loss_scale_value = get_loss_scale_for_deepspeed(model)
         else:
             # this attribute is added by timm on one optimizer (adahessian)
@@ -171,7 +172,8 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
         for group in optimizer.param_groups:
             min_lr = min(min_lr, group["lr"])
             max_lr = max(max_lr, group["lr"])
-        wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value, "max_lr": max_lr, "min_lr": min_lr, "grad_norm": grad_norm_log})
+        wandb.log({"epoch": epoch, "batch": step, "train_loss": loss_value, "max_lr": max_lr, "min_lr": min_lr,
+                   "grad_norm": grad_norm_log})
 
 
         metric_logger.update(lr=max_lr)
