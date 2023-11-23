@@ -140,8 +140,8 @@ def train_one_epoch(model: torch.nn.Module, criterion: torch.nn.Module,
                 # Deepspeed will call step() & model.zero_grad() automatic
                 if model_ema is not None:
                     model_ema.update(model)
-            grad_norm = None
             grad_norm_log = grad_norm.item()
+            grad_norm = None
             loss_scale_value = get_loss_scale_for_deepspeed(model)
         else:
             # this attribute is added by timm on one optimizer (adahessian)
