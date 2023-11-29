@@ -703,7 +703,6 @@ def main(args, ds_init):
 
     ######### for zero shot ############
 
-
     zero_shot_blyat = False
 
     clip_model = None
