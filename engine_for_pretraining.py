@@ -28,8 +28,15 @@ def train_one_epoch(args, model: torch.nn.Module, data_loader: Iterable, optimiz
                     wd_schedule_values=None, update_freq=None, time_stride_loss=True, lr_scale=1.0,
                     image_teacher_model=None, video_teacher_model=None, norm_feature=False,data_for_knn=None,):
 
+    # test that the output of the video teacher doesn't change by passing in a ones vector
+    ones_video_features = video_teacher_model(torch.ones((1, 3, 16, 224, 224)).cuda())
+    print("ones video features (epoch start): ", ones_video_features[:,0,:25])
+
     if data_for_knn is not None:
         log_knn_acc(data_for_knn, model)
+        # test that the output of the video teacher doesn't change by passing in a ones vector
+        ones_video_features = video_teacher_model(torch.ones((1, 3, 16, 224, 224)).cuda())
+        print("ones video features (after knn): ", ones_video_features[:, 0, :25])
 
     model.train()
     metric_logger = utils.MetricLogger(delimiter="  ")
